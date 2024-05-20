@@ -51,10 +51,12 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void delete(UUID id) {
-    if(!userRepository.existsById(id)){
+    Optional<User> user = userRepository.findById(id);
+    if(user.isEmpty()){
       throw new ServiceException(Error.USER_NOT_FOUND);
     }
-    userRepository.deleteById(id);
+    user.get().setStatus(0);
+    userRepository.save(user.get());
   }
 
   private User fromReq(UserReq userReq, UUID id){
