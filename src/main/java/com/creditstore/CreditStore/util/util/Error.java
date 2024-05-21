@@ -15,6 +15,10 @@ public enum Error {
   INVALID_PASSWORD(1005, "La contraseña debe tener al menos 8 caracteres: mínimo un número,"
       + " una minúscula y una mayúscula"),
   INVALID_USER_DATA(1006, "Datos del usuario inválidos"),
+
+  INVALID_EMAIL(1007, "Ingrese un correo válido"),
+
+  INVALID_OTP(1008, "Otp inválido")
   ;
 
   private final int codError;

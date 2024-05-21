@@ -31,7 +31,8 @@ public class UserServiceImpl implements UserService {
 
     user.setStatus(1);
     user.setDateHourCreation(new Date());
-
+    UUID uuid = UUID.randomUUID();
+    user.setCreatedBy(uuid);
     return userRepository.save(user);
   }
 
