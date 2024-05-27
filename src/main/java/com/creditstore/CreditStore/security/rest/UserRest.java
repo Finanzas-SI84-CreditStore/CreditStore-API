@@ -1,4 +1,6 @@
 package com.creditstore.CreditStore.security.rest;
+import com.creditstore.CreditStore.security.model.LoginRequest;
+import com.creditstore.CreditStore.security.model.LoginResponse;
 import com.creditstore.CreditStore.security.model.UserReq;
 import com.creditstore.CreditStore.security.repository.UserRepository;
 import com.creditstore.CreditStore.security.services.UserService;
@@ -34,5 +36,13 @@ public class UserRest {
       throw new InvalidDataException(result, Error.INVALID_USER_DATA);
     }
     return userService.create(userReq).getId();
+  }
+
+  @PostMapping("/login")
+  public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
+    if (result.hasErrors()) {
+      throw new InvalidDataException(result, Error.INVALID_USER_DATA);
+    }
+    return userService.authenticate(loginRequest);
   }
 }
