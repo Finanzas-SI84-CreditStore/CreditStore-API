@@ -18,7 +18,9 @@ public enum Error {
 
   INVALID_EMAIL(1007, "Ingrese un correo válido"),
 
-  INVALID_OTP(1008, "Otp inválido")
+  INVALID_OTP(1008, "Otp inválido"),
+
+  INVALID_LOGIN(1008, "Email o contraseña inválidas")
   ;
 
   private final int codError;

@@ -1,6 +1,8 @@
 package com.creditstore.CreditStore.security.services;
 
 import com.creditstore.CreditStore.security.entity.User;
+import com.creditstore.CreditStore.security.model.LoginRequest;
+import com.creditstore.CreditStore.security.model.LoginResponse;
 import com.creditstore.CreditStore.security.model.UserReq;
 import com.creditstore.CreditStore.security.repository.UserRepository;
 import com.creditstore.CreditStore.util.exception.ServiceException;
@@ -85,6 +87,27 @@ public class UserServiceImpl implements UserService {
         && upperCase.matcher(password).matches()
         && numbers.matcher(password).matches()
         && hasMinLarge;
+  }
+
+  @Override
+  public LoginResponse authenticate(LoginRequest loginRequest) {
+    User user = userRepository.findByEmail(loginRequest.getEmail());
+    if (user == null || !user.getPassword().equals(loginRequest.getPassword())) {
+      throw new ServiceException(Error.INVALID_LOGIN);
+    }
+
+    // Aqui pondre el codigo para el JWT
+    String token = generateToken(user);
+
+    LoginResponse response = new LoginResponse();
+    response.setToken(token);
+    response.setMessage("Login exitoso");
+
+    return response;
+  }
+
+  private String generateToken(User user) {
+    return "dummy-token"; //
   }
 
 }
