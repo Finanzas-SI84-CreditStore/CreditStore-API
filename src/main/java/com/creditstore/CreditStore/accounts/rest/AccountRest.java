@@ -1,8 +1,8 @@
-package com.creditstore.CreditStore.account.controller;
+package com.creditstore.CreditStore.accounts.rest;
 
-import com.creditstore.CreditStore.account.dto.AccountRequest;
-import com.creditstore.CreditStore.account.dto.AccountResponse;
-import com.creditstore.CreditStore.account.service.AccountService;
+import com.creditstore.CreditStore.accounts.model.AccountRequest;
+import com.creditstore.CreditStore.accounts.model.AccountResponse;
+import com.creditstore.CreditStore.accounts.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
-public class AccountController {
+public class AccountRest {
 
     @Autowired
     private AccountService accountService;

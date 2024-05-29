@@ -1,7 +1,7 @@
-package com.creditstore.CreditStore.account.service;
+package com.creditstore.CreditStore.accounts.service;
 
-import com.creditstore.CreditStore.account.dto.AccountRequest;
-import com.creditstore.CreditStore.account.dto.AccountResponse;
+import com.creditstore.CreditStore.accounts.model.AccountRequest;
+import com.creditstore.CreditStore.accounts.model.AccountResponse;
 
 import java.util.List;
 

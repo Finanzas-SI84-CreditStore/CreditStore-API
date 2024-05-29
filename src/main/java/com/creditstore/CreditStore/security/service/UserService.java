@@ -1,10 +1,11 @@
-package com.creditstore.CreditStore.security.services;
+package com.creditstore.CreditStore.security.service;
 
 import com.creditstore.CreditStore.security.model.LoginRequest;
 import com.creditstore.CreditStore.security.model.LoginResponse;
 import com.creditstore.CreditStore.security.entity.User;
 import com.creditstore.CreditStore.security.model.UserReq;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
@@ -17,4 +18,6 @@ public interface UserService {
   void delete(UUID id);
 
   LoginResponse authenticate(LoginRequest loginRequest);
+
+  List<User> getAllUsers();
 }
