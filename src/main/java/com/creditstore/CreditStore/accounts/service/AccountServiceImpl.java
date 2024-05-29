@@ -1,9 +1,9 @@
-package com.creditstore.CreditStore.account.service;
+package com.creditstore.CreditStore.accounts.service;
 
-import com.creditstore.CreditStore.account.dto.AccountRequest;
-import com.creditstore.CreditStore.account.dto.AccountResponse;
-import com.creditstore.CreditStore.account.entity.Account;
-import com.creditstore.CreditStore.account.repository.AccountRepository;
+import com.creditstore.CreditStore.accounts.model.AccountRequest;
+import com.creditstore.CreditStore.accounts.model.AccountResponse;
+import com.creditstore.CreditStore.accounts.entity.Account;
+import com.creditstore.CreditStore.accounts.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

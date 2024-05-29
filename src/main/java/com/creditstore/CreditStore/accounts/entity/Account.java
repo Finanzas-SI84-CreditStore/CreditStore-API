@@ -1,4 +1,4 @@
-package com.creditstore.CreditStore.account.entity;
+package com.creditstore.CreditStore.accounts.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,6 +1,6 @@
-package com.creditstore.CreditStore.account.repository;
+package com.creditstore.CreditStore.accounts.repository;
 
-import com.creditstore.CreditStore.account.entity.Account;
+import com.creditstore.CreditStore.accounts.entity.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

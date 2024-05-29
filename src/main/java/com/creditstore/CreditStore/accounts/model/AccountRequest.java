@@ -1,4 +1,4 @@
-package com.creditstore.CreditStore.account.dto;
+package com.creditstore.CreditStore.accounts.model;
 
 import lombok.Getter;
 import lombok.Setter;

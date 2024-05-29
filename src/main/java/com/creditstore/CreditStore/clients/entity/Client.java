@@ -1,17 +1,16 @@
-package com.creditstore.CreditStore.security.entity;
+package com.creditstore.CreditStore.clients.entity;
 
-import com.creditstore.CreditStore.clients.entity.Client;
+import com.creditstore.CreditStore.security.entity.User;
 import com.creditstore.CreditStore.util.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,28 +26,33 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class User extends BaseEntity {
-
+public class Client extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  private String names;
+  private String name;
 
-  private String lastNames;
-
-  private String password;
-
-  private String email;
+  private String lastName;
 
   private String dni;
 
   private LocalDate birthDate;
 
-  private String storeName;
+  private String address;
 
-  @OneToMany(mappedBy = "user")
-  @JsonManagedReference
-  private List<Client> clients = new ArrayList<>();
+  private int paymentDay;
+
+  private double creditLine;
+
+  private double debt;
+
+  private double availableBalance;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
+  @ToString.Exclude
+  @JsonBackReference
+  private User user;
 
 }
