@@ -4,6 +4,8 @@ import com.creditstore.CreditStore.accounts.model.AccountRequest;
 import com.creditstore.CreditStore.accounts.model.AccountResponse;
 import com.creditstore.CreditStore.accounts.entity.Account;
 import com.creditstore.CreditStore.accounts.repository.AccountRepository;
+import com.creditstore.CreditStore.util.exception.ServiceException;
+import com.creditstore.CreditStore.util.util.Error;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse create(AccountRequest accountRequest) {
+        validateAccountRequest(accountRequest);
         Account account = fromRequest(accountRequest);
         account = accountRepository.save(account);
         return toResponse(account);
@@ -37,6 +40,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse update(Integer id, AccountRequest accountRequest) {
+        validateAccountRequest(accountRequest);
         Account account = fromRequest(accountRequest);
         account.setId(id);
         account = accountRepository.save(account);
@@ -75,5 +79,35 @@ public class AccountServiceImpl implements AccountService {
         response.setGracePeriod(account.getGracePeriod());
         response.setGracePeriodLength(account.getGracePeriodLength());
         return response;
+    }
+
+    private void validateAccountRequest(AccountRequest accountRequest) {
+        if (accountRequest.getPurchaseValue() == null) {
+            throw new ServiceException(Error.PURCHASE_VALUE_REQUIRED);
+        }
+        if (accountRequest.getInterestType() == null || accountRequest.getInterestType().isEmpty()) {
+            throw new ServiceException(Error.INTEREST_TYPE_REQUIRED);
+        }
+        if (accountRequest.getCapitalizationPeriod() == null || accountRequest.getCapitalizationPeriod().isEmpty()) {
+            throw new ServiceException(Error.CAPITALIZATION_PERIOD_REQUIRED);
+        }
+        if (accountRequest.getInterestPeriod() == null) {
+            throw new ServiceException(Error.INTEREST_PERIOD_REQUIRED);
+        }
+        if (accountRequest.getInterestRate() == null) {
+            throw new ServiceException(Error.INTEREST_RATE_REQUIRED);
+        }
+        if (accountRequest.getCreditType() == null || accountRequest.getCreditType().isEmpty()) {
+            throw new ServiceException(Error.CREDIT_TYPE_REQUIRED);
+        }
+        if (accountRequest.getInstallmentCount() == null) {
+            throw new ServiceException(Error.INSTALLMENT_COUNT_REQUIRED);
+        }
+        if (accountRequest.getGracePeriod() == null) {
+            throw new ServiceException(Error.GRACE_PERIOD_REQUIRED);
+        }
+        if (accountRequest.getGracePeriodLength() == null) {
+            throw new ServiceException(Error.GRACE_PERIOD_LENGTH_REQUIRED);
+        }
     }
 }
