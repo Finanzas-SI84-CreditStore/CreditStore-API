@@ -1,5 +1,6 @@
 package com.creditstore.CreditStore.security.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public interface UserDto {
@@ -14,7 +15,7 @@ public interface UserDto {
 
   int getStatus();
 
-  Date getBirthDate();
+  LocalDate getBirthDate();
 
   String getDni();
 

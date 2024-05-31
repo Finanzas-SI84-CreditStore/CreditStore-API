@@ -10,7 +10,7 @@ public enum Error {
 
   USER_NOT_EXISTS(1003, "El usuario no existe"),
 
-  USER_ALREADY_EXIST(1004, "El correo ya se encuentra registrado"),
+  EMAIL_ALREADY_EXIST(1004, "El correo ya se encuentra registrado"),
 
   INVALID_PASSWORD(1005, "La contraseña debe tener al menos 8 caracteres: mínimo un número,"
       + " una minúscula y una mayúscula"),
@@ -20,7 +20,21 @@ public enum Error {
 
   INVALID_OTP(1008, "Otp inválido"),
 
-  INVALID_LOGIN(1008, "Email o contraseña inválidas")
+  INVALID_LOGIN(1009, "Email o contraseña inválidas"),
+
+  EXIST_CLIENT(1010, "El DNI ya se encuentra registrado"),
+
+  CLIENT_NOT_FOUND(1011, "No se encontró el cliente"),
+
+  CLIENT_NOT_EXISTS(1012, "El cliente no existe"),
+
+  USER_ALREADY_EXIST(1013, "El usuario ya se encuentra registrado"),
+
+  INVALID_BIRTH_DATE(1014, "El usuario debe ser mayor de edad"),
+
+  INVALID_DNI(1015, "El DNI debe tener 8 dígitos"),
+
+  INVALID_PAYMENT_DAY(1016, "El día de pago debe ser 5, 10, 15, 20 o 25"),
   ;
 
   private final int codError;

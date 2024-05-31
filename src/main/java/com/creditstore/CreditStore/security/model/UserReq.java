@@ -1,7 +1,9 @@
 package com.creditstore.CreditStore.security.model;
 
 import jakarta.validation.constraints.NotEmpty;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.UUID;
+
 import lombok.Getter;
 import lombok.ToString;
 
@@ -9,10 +11,10 @@ import lombok.ToString;
 @ToString
 public class UserReq {
   @NotEmpty(message = "El campo nombres es requerido")
-  private String names;
+  private String name;
 
   @NotEmpty(message = "El campo apellidos es requerido")
-  private String lastNames;
+  private String lastName;
 
   @NotEmpty(message = "El campo DNI es requerido")
   private String dni;
@@ -24,7 +26,8 @@ public class UserReq {
   private String password;
 
   @NotEmpty(message = "El campo fecha de nacimiento es requerido")
-  private Date birthDate;
+  private LocalDate birthDate;
 
   private String storeName;
+
 }
