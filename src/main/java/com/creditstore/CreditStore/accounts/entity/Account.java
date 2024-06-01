@@ -1,9 +1,12 @@
 package com.creditstore.CreditStore.accounts.entity;
 
+import com.creditstore.CreditStore.clients.entity.Client;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,4 +54,8 @@ public class Account {
 
     @NotNull
     private Integer gracePeriodLength;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
 }

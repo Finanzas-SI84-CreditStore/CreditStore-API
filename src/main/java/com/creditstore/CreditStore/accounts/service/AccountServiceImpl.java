@@ -4,6 +4,8 @@ import com.creditstore.CreditStore.accounts.model.AccountRequest;
 import com.creditstore.CreditStore.accounts.model.AccountResponse;
 import com.creditstore.CreditStore.accounts.entity.Account;
 import com.creditstore.CreditStore.accounts.repository.AccountRepository;
+import com.creditstore.CreditStore.clients.repository.ClientRepository;
+import com.creditstore.CreditStore.clients.entity.Client;
 import com.creditstore.CreditStore.util.exception.ServiceException;
 import com.creditstore.CreditStore.util.util.Error;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +21,17 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private ClientRepository clientRepository;
+
     @Override
     public AccountResponse create(AccountRequest accountRequest) {
         validateAccountRequest(accountRequest);
-        Account account = fromRequest(accountRequest);
+
+        Client client = clientRepository.findById(accountRequest.getClientId())
+                .orElseThrow(() -> new ServiceException(Error.CLIENT_NOT_FOUND));
+
+        Account account = fromRequest(accountRequest, client);
         account = accountRepository.save(account);
         return toResponse(account);
     }
@@ -41,7 +50,11 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponse update(Integer id, AccountRequest accountRequest) {
         validateAccountRequest(accountRequest);
-        Account account = fromRequest(accountRequest);
+
+        Client client = clientRepository.findById(accountRequest.getClientId())
+                .orElseThrow(() -> new ServiceException(Error.CLIENT_NOT_FOUND));
+
+        Account account = fromRequest(accountRequest, client);
         account.setId(id);
         account = accountRepository.save(account);
         return toResponse(account);
@@ -52,7 +65,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.deleteById(id);
     }
 
-    private Account fromRequest(AccountRequest accountRequest) {
+    private Account fromRequest(AccountRequest accountRequest, Client client) {
         return Account.builder()
                 .purchaseValue(accountRequest.getPurchaseValue())
                 .interestType(accountRequest.getInterestType())
@@ -63,6 +76,7 @@ public class AccountServiceImpl implements AccountService {
                 .installmentCount(accountRequest.getInstallmentCount())
                 .gracePeriod(accountRequest.getGracePeriod())
                 .gracePeriodLength(accountRequest.getGracePeriodLength())
+                .client(client)
                 .build();
     }
 
@@ -108,6 +122,9 @@ public class AccountServiceImpl implements AccountService {
         }
         if (accountRequest.getGracePeriodLength() == null) {
             throw new ServiceException(Error.GRACE_PERIOD_LENGTH_REQUIRED);
+        }
+        if (accountRequest.getClientId() == null) {
+            throw new ServiceException(Error.CLIENT_NOT_FOUND);
         }
     }
 }
