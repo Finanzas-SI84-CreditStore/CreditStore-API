@@ -13,7 +13,7 @@ public enum Error {
   EMAIL_ALREADY_EXIST(1004, "El correo ya se encuentra registrado"),
 
   INVALID_PASSWORD(1005, "La contraseña debe tener al menos 8 caracteres: mínimo un número,"
-      + " una minúscula y una mayúscula"),
+          + " una minúscula y una mayúscula"),
   INVALID_USER_DATA(1006, "Datos del usuario inválidos"),
 
   INVALID_EMAIL(1007, "Ingrese un correo válido"),
@@ -35,14 +35,30 @@ public enum Error {
   INVALID_DNI(1015, "El DNI debe tener 8 dígitos"),
 
   INVALID_PAYMENT_DAY(1016, "El día de pago debe ser 5, 10, 15, 20 o 25"),
-  ;
+
+  PURCHASE_VALUE_REQUIRED(1017, "Valor de compra es requerido"),
+
+  INTEREST_TYPE_REQUIRED(1018, "Tipo de tasa es requerido"),
+
+  CAPITALIZATION_PERIOD_REQUIRED(1019, "Capitaizacion de tasa es requerido"),
+
+  INTEREST_PERIOD_REQUIRED(1020, "Tiempo de tasa es requerido"),
+
+  INTEREST_RATE_REQUIRED(1021, "Valor de tasa es requerido"),
+
+  CREDIT_TYPE_REQUIRED(1022, "Tipo de credito es requerido"),
+
+  INSTALLMENT_COUNT_REQUIRED(1023, "Numero de cuotas es requerido"),
+
+  GRACE_PERIOD_REQUIRED(1024, "Plazo de gracia es requerido"),
+
+  GRACE_PERIOD_LENGTH_REQUIRED(1025, "Periodo de gracia es requerido");
 
   private final int codError;
-
   private final String message;
+
   Error(int codError, String message){
     this.codError = codError;
     this.message = message;
   }
-
 }
