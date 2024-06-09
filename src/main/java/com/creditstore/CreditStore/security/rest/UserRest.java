@@ -39,7 +39,7 @@ public class UserRest {
   }
 
   @PostMapping("/login")
-  public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
+  public UUID login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
     if (result.hasErrors()) {
       throw new InvalidDataException(result, Error.INVALID_USER_DATA);
     }
