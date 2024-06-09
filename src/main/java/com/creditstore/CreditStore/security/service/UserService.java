@@ -17,7 +17,7 @@ public interface UserService {
 
   void delete(UUID id);
 
-  LoginResponse authenticate(LoginRequest loginRequest);
+  UUID authenticate(LoginRequest loginRequest);
 
   List<User> getAllUsers();
 }
