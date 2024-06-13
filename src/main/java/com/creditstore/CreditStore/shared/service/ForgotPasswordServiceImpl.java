@@ -49,11 +49,11 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService{
     ForgotPassword forgotPassword = forgotPasswordRepository.findByUser(user);
     if(forgotPassword!=null){
       forgotPassword.setOtp(otp);
-      forgotPassword.setExpirationTime(new Date(System.currentTimeMillis() + 70*1000));
+      forgotPassword.setExpirationTime(new Date(System.currentTimeMillis() + 2*60*1000));
     }else {
       forgotPassword = ForgotPassword.builder()
           .otp(otp)
-          .expirationTime(new Date(System.currentTimeMillis() + 70*1000))
+          .expirationTime(new Date(System.currentTimeMillis() + 2*60*1000))
           .user(userRepository.findByEmail(email))
           .build();
     }

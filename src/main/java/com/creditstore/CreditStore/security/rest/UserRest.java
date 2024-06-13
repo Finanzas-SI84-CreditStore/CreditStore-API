@@ -51,5 +51,9 @@ public class UserRest {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable UUID id) {
+        return userService.getById(id);
+    }
 
 }
