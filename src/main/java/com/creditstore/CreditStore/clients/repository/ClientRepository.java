@@ -10,4 +10,6 @@ public interface ClientRepository extends JpaRepository<Client, UUID> {
   boolean existsByDni(String dni);
 
   List<Client> findAllByUserId(UUID userId);
+
+
 }
