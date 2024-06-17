@@ -52,7 +52,13 @@ public enum Error {
 
   GRACE_PERIOD_REQUIRED(1024, "Plazo de gracia es requerido"),
 
-  GRACE_PERIOD_LENGTH_REQUIRED(1025, "Periodo de gracia es requerido");
+  GRACE_PERIOD_LENGTH_REQUIRED(1025, "Periodo de gracia es requerido"),
+
+  PAY_NOT_FOUND(1026, "No se encontró el pago"),
+
+  CREDIT_LINE_EXCEEDED(1027, "El monto excede la línea de crédito"),
+
+    ACCOUNT_NOT_FOUND(1028, "No se encontró la cuenta");
 
   private final int codError;
   private final String message;

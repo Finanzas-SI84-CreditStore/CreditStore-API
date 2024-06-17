@@ -2,7 +2,10 @@ package com.creditstore.CreditStore.accounts.rest;
 
 import com.creditstore.CreditStore.accounts.model.AccountRequest;
 import com.creditstore.CreditStore.accounts.model.AccountResponse;
+import com.creditstore.CreditStore.accounts.model.PayRequest;
+import com.creditstore.CreditStore.accounts.model.PayResponse;
 import com.creditstore.CreditStore.accounts.service.AccountService;
+import com.creditstore.CreditStore.accounts.service.PayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,9 @@ public class AccountRest {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private PayService payService;
 
     @PostMapping
     public ResponseEntity<AccountResponse> create(@RequestBody AccountRequest accountRequest) {
@@ -49,4 +55,18 @@ public class AccountRest {
         accountService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    // agregar pagos
+    @PostMapping("/{id}/pays")
+    public ResponseEntity<PayResponse> createPay(@PathVariable Integer id, @RequestBody PayRequest payRequest) {
+        PayResponse newPay = payService.create(payRequest, id);
+        return ResponseEntity.ok(newPay);
+    }
+
+    @GetMapping("/{id}/pays")
+    public ResponseEntity<List<PayResponse>> getAllPays(@PathVariable Integer id) {
+        List<PayResponse> pays = payService.getAllByAccountId(id);
+        return ResponseEntity.ok(pays);
+    }
+
 }

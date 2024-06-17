@@ -11,6 +11,7 @@ import com.creditstore.CreditStore.util.util.Error;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,15 +25,26 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private ClientRepository clientRepository;
 
+
+
     @Override
     public AccountResponse create(AccountRequest accountRequest) {
         validateAccountRequest(accountRequest);
 
         Client client = clientRepository.findById(accountRequest.getClientId())
                 .orElseThrow(() -> new ServiceException(Error.CLIENT_NOT_FOUND));
+        //límite de credito
+        if(Double.compare(client.getAvailableBalance(), accountRequest.getPurchaseValue().doubleValue()) < 0){
+            throw new ServiceException(Error.CREDIT_LINE_EXCEEDED);
+        }
 
         Account account = fromRequest(accountRequest, client);
+        //TODO: SE DEBE CALCULAR EL VALOR RESTANTE
         account = accountRepository.save(account);
+        //TODO: SE DEBE HACER PRUEBAS
+        client.setAvailableBalance(client.getAvailableBalance() - accountRequest.getPurchaseValue().doubleValue());
+        client.setDebt(client.getDebt() + accountRequest.getPurchaseValue().doubleValue());
+        clientRepository.save(client);
         return toResponse(account);
     }
 
@@ -54,9 +66,19 @@ public class AccountServiceImpl implements AccountService {
         Client client = clientRepository.findById(accountRequest.getClientId())
                 .orElseThrow(() -> new ServiceException(Error.CLIENT_NOT_FOUND));
 
+        if(Double.compare(client.getAvailableBalance(), accountRequest.getPurchaseValue().doubleValue()) < 0){
+            throw new ServiceException(Error.CREDIT_LINE_EXCEEDED);
+        }
+
         Account account = fromRequest(accountRequest, client);
         account.setId(id);
+        //TODO: SE DEBE AGREGAR LÓGICA DE PAGO DEUDA
         account = accountRepository.save(account);
+
+        client.setAvailableBalance(client.getAvailableBalance() - accountRequest.getPurchaseValue().doubleValue());
+        client.setDebt(client.getDebt() + accountRequest.getPurchaseValue().doubleValue());
+        clientRepository.save(client);
+
         return toResponse(account);
     }
 

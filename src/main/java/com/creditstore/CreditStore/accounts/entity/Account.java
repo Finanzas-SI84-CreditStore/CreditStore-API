@@ -55,6 +55,13 @@ public class Account {
     @NotNull
     private Integer gracePeriodLength;
 
+    @NotNull
+    private BigDecimal remainingValue;
+
+    @NotNull
+    private BigDecimal monthlyPayment;
+
+
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
