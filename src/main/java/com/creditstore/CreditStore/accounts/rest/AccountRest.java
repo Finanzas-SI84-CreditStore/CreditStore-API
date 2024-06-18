@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/accounts")
@@ -29,20 +30,12 @@ public class AccountRest {
         return ResponseEntity.ok(newAccount);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AccountResponse> getById(@PathVariable Integer id) {
-        AccountResponse account = accountService.getById(id);
-        if (account == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(account);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<AccountResponse>> getAll() {
-        List<AccountResponse> accounts = accountService.getAll();
+    @GetMapping("/clients/{clientId}/accounts")
+    public ResponseEntity<List<AccountResponse>> getAllByClientId(@PathVariable UUID clientId) {
+        List<AccountResponse> accounts = accountService.getAll(clientId);
         return ResponseEntity.ok(accounts);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<AccountResponse> update(@PathVariable Integer id, @RequestBody AccountRequest accountRequest) {

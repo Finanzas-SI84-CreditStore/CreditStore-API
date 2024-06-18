@@ -4,11 +4,12 @@ import com.creditstore.CreditStore.accounts.model.AccountRequest;
 import com.creditstore.CreditStore.accounts.model.AccountResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface AccountService {
     AccountResponse create(AccountRequest accountRequest);
     AccountResponse getById(Integer id);
-    List<AccountResponse> getAll();
+    List<AccountResponse> getAll(UUID clientId);
     AccountResponse update(Integer id, AccountRequest accountRequest);
     void delete(Integer id);
 }

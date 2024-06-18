@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +35,10 @@ public class AccountServiceImpl implements AccountService {
         Client client = clientRepository.findById(accountRequest.getClientId())
                 .orElseThrow(() -> new ServiceException(Error.CLIENT_NOT_FOUND));
         //límite de credito
-        if(Double.compare(client.getAvailableBalance(), accountRequest.getPurchaseValue().doubleValue()) < 0){
+        BigDecimal availableBalance = BigDecimal.valueOf(client.getAvailableBalance());
+        BigDecimal purchaseValue = accountRequest.getPurchaseValue();
+
+        if (availableBalance.compareTo(purchaseValue) < 0) {
             throw new ServiceException(Error.CREDIT_LINE_EXCEEDED);
         }
 
@@ -55,8 +59,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountResponse> getAll() {
-        return accountRepository.findAll().stream().map(this::toResponse).collect(Collectors.toList());
+    public List<AccountResponse> getAll(UUID clientId) {
+        List<Account> accounts;
+        if (clientId != null) {
+            accounts = accountRepository.findAllByClientId(clientId);
+        } else {
+            accounts = accountRepository.findAll();
+        }
+        return accounts.stream().map(this::toResponse).collect(Collectors.toList());
     }
 
     @Override
