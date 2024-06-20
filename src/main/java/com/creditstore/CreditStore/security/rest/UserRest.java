@@ -5,6 +5,9 @@ import com.creditstore.CreditStore.security.model.LoginResponse;
 import com.creditstore.CreditStore.security.model.UserReq;
 import com.creditstore.CreditStore.security.repository.UserRepository;
 import com.creditstore.CreditStore.security.service.UserService;
+import com.creditstore.CreditStore.shared.formulas.CalculadoraGrilla;
+import com.creditstore.CreditStore.shared.formulas.DatosEntrada;
+import com.creditstore.CreditStore.shared.formulas.DatosSalida;
 import com.creditstore.CreditStore.util.exception.InvalidDataException;
 import com.creditstore.CreditStore.util.util.Error;
 import jakarta.validation.Valid;
@@ -56,4 +59,9 @@ public class UserRest {
         return userService.getById(id);
     }
 
+
+    @PostMapping("/plandepagos")
+    public List<DatosSalida> planDePagos(@RequestBody DatosEntrada datosEntrada) {
+        return CalculadoraGrilla.calculadora(datosEntrada);
+    }
 }

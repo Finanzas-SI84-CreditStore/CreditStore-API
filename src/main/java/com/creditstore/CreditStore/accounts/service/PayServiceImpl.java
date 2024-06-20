@@ -30,7 +30,6 @@ public class PayServiceImpl implements PayService {
         Pay pay = fromRequest(payRequest, accountId);
         pay = payRepository.save(pay);
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new ServiceException(Error.ACCOUNT_NOT_FOUND));
-        account.setRemainingValue(account.getRemainingValue().subtract(BigDecimal.valueOf(pay.getAmount())));
 
         Client client = account.getClient();
         client.setDebt(client.getDebt() - pay.getAmount());

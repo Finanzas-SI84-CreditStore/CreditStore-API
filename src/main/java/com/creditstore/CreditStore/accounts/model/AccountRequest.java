@@ -12,31 +12,28 @@ import java.util.UUID;
 @Setter
 public class AccountRequest {
     @NotNull(message = "Valor de compra es requerido")
-    private BigDecimal purchaseValue;
+    private BigDecimal ValorCompra;
 
     @NotEmpty(message = "Tipo de tasa es requerido")
-    private String interestType;
+    private String TipoTasa;
 
     @NotEmpty(message = "Capitalizacion de tasa es requerido")
-    private String capitalizationPeriod;
-
-    @NotNull(message = "Tiempo de tasa es requerido")
-    private Integer interestPeriod;
+    private String CapitalizacionTasa;
 
     @NotNull(message = "Valor de tasa es requerido")
-    private BigDecimal interestRate;
+    private BigDecimal ValorTasa;
 
     @NotEmpty(message = "Tipo de credito es requerido")
-    private String creditType;
+    private String TipoCredito;
 
     @NotNull(message = "Numero de cuotas es requerido")
-    private Integer installmentCount;
+    private Integer NumeroCuotas;
 
     @NotNull(message = "Plazo de gracia es requerido")
-    private Boolean gracePeriod;
+    private Boolean PlazoGracia;
 
     @NotNull(message = "Periodo de gracia es requerido")
-    private Integer gracePeriodLength;
+    private Integer PeriodoGracia;
 
     @NotNull(message = "ID del cliente es requerido")
     private UUID clientId;

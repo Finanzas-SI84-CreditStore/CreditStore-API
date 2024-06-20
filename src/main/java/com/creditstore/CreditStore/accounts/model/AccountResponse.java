@@ -9,13 +9,12 @@ import java.math.BigDecimal;
 @Setter
 public class AccountResponse {
     private Integer id;
-    private BigDecimal purchaseValue;
-    private String interestType;
-    private String capitalizationPeriod;
-    private Integer interestPeriod;
-    private BigDecimal interestRate;
-    private String creditType;
-    private Integer installmentCount;
-    private Boolean gracePeriod;
-    private Integer gracePeriodLength;
+    private BigDecimal ValorCompra;
+    private String TipoTasa;
+    private String CapitalizacionTasa;
+    private BigDecimal ValorTasa;
+    private String TipoCredito;
+    private Integer NumeroCuotas;
+    private Boolean PlazoGracia;
+    private Integer PeriodoGracia;
 }

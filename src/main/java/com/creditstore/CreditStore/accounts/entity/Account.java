@@ -29,37 +29,28 @@ public class Account {
     private Integer id;
 
     @NotNull
-    private BigDecimal purchaseValue;
+    private BigDecimal ValorCompra;
 
     @NotNull
-    private String interestType;
+    private String TipoTasa;
 
     @NotNull
-    private String capitalizationPeriod;
+    private String CapitalizacionTasa;
 
     @NotNull
-    private Integer interestPeriod;
+    private BigDecimal ValorTasa;
 
     @NotNull
-    private BigDecimal interestRate;
+    private String TipoCredito;
 
     @NotNull
-    private String creditType;
+    private Integer NumeroCuotas;
 
     @NotNull
-    private Integer installmentCount;
+    private Boolean PlazoGracia;
 
     @NotNull
-    private Boolean gracePeriod;
-
-    @NotNull
-    private Integer gracePeriodLength;
-
-    @NotNull
-    private BigDecimal remainingValue;
-
-    @NotNull
-    private BigDecimal monthlyPayment;
+    private Integer PeriodoGracia;
 
 
     @ManyToOne
