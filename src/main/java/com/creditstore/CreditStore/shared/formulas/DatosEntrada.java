@@ -9,8 +9,11 @@ import lombok.*;
 public class DatosEntrada {
 
     private String tipoTasa;
-    private String tiempoTasa;
 
+    //MENSUAL = 30, TRIMESTRAL = 90, SEMESTRAL = 180, ANUAL = 360, DIARIA = 1, QUINCENAL = 15
+    private double tiempoTasa;
+
+    //MENSUAL = 30, TRIMESTRAL = 90, SEMESTRAL = 180, ANUAL = 360, DIARIA = 1, QUINCENAL = 15
     private double capitalizacion;
 
     private double tasa;
@@ -18,7 +21,6 @@ public class DatosEntrada {
 
     private String tipoPeriodoGracia;
     private double periodoGraciaMeses;
-    private double mesInicio;
     private double numeroCuotas;
 
     private double limiteCredito;
@@ -26,15 +28,17 @@ public class DatosEntrada {
     private double cuotasPeriodoGracia;
     private double montoPrestamo;
 
-    public double calcularTEA(DatosEntrada datosEntrada) {
+    private double diasAtraso;
+    private double tasaMoratoria;
 
-        double TEA;
+    //ENTRA NOMINAL SALE EFECTIVA
+    public double calcularTEM(DatosEntrada datosEntrada) {
 
-        if(!datosEntrada.tipoTasa.equals("TEA")){
-            TEA = Math.pow((1+(datosEntrada.tasa/100)/(360.00/datosEntrada.capitalizacion)),(360.00/datosEntrada.capitalizacion))-1;
-        } else TEA = datosEntrada.tasa / 100.00;
+        double TEM;
 
-        return TEA;
+        TEM = Math.pow((1+((datosEntrada.tasa/100)/(datosEntrada.tiempoTasa/datosEntrada.capitalizacion))),(30/datosEntrada.capitalizacion))-1;
+
+        return TEM;
     }
 
     public double calcularCuota(double tasaInteres, double numeroPeriodos, double valorPresente, double valorFuturo, boolean tipo) {
