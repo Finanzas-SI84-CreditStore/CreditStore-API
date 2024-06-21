@@ -49,6 +49,12 @@ public class CalculadoraGrilla {
                 datosSalida.setFlujo(prestamo);
             } else {
 
+                if(datosEntrada.getDiasAtraso() == 0) {
+                    datosSalida.setInteresMora(0);
+                } else {
+                    datosSalida.setInteresMora(prestamo * (Math.pow(1+datosEntrada.getTasaMoratoria()/100,datosEntrada.getDiasAtraso()/30) -1) );
+                }
+
                 interes = saldoInicial * TEM; //de momento obviamos el negativo
 
                 mesinvisible = mesfila-mesInicio+1;

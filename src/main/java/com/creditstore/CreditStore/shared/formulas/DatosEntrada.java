@@ -28,6 +28,9 @@ public class DatosEntrada {
     private double cuotasPeriodoGracia;
     private double montoPrestamo;
 
+    private double diasAtraso;
+    private double tasaMoratoria;
+
     //ENTRA NOMINAL SALE EFECTIVA
     public double calcularTEM(DatosEntrada datosEntrada) {
 

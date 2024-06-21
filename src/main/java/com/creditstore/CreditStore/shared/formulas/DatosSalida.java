@@ -17,4 +17,5 @@ public class DatosSalida {
     private double flujo;
     private double tem;
     private String tipoPeriodoGracia;
+    private double interesMora;
 }
