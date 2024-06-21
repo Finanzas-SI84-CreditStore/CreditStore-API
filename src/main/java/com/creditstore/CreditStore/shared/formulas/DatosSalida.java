@@ -16,4 +16,5 @@ public class DatosSalida {
     private double saldoFinal;
     private double flujo;
     private double tem;
+    private String tipoPeriodoGracia;
 }
