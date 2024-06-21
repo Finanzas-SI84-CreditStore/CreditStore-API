@@ -1,14 +1,15 @@
 package com.creditstore.CreditStore.shared.formulas;
 
-
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class CalculadoraGrilla {
 
     public static List<DatosSalida> calculadora(DatosEntrada datosEntrada) {
         List<DatosSalida> datos = new ArrayList<>();
-
 
         double prestamo = datosEntrada.getMontoPrestamo();
         double flujo = 0;
@@ -28,6 +29,10 @@ public class CalculadoraGrilla {
         double mesInicio = 1;
         double mesfila = 0;
 
+        // Inicializar la fecha actual
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+
         for (double mesinvisible = 0; mesinvisible <= datosEntrada.getNumeroCuotas(); mesinvisible++) {
             if (mesfila < mesInicio) {
                 saldoInicial = 0;
@@ -40,6 +45,7 @@ public class CalculadoraGrilla {
             }
             DatosSalida datosSalida = new DatosSalida();
 
+            // Establecer la fecha para cada mes
             if (mesfila == 0) {
                 datosSalida.setSaldoInicial(prestamo);
                 datosSalida.setIntereses(0);
@@ -47,48 +53,42 @@ public class CalculadoraGrilla {
                 datosSalida.setCuota(0);
                 datosSalida.setSaldoFinal(prestamo);
                 datosSalida.setFlujo(prestamo);
+                datosSalida.setFecha(calendar.getTime());
             } else {
+                calendar.add(Calendar.MONTH, 1); // Agregar un mes para cada iteración
 
                 if(datosEntrada.getDiasAtraso() == 0) {
                     datosSalida.setInteresMora(0);
                 } else {
-                    datosSalida.setInteresMora(prestamo * (Math.pow(1+datosEntrada.getTasaMoratoria()/100,datosEntrada.getDiasAtraso()/30) -1) );
+                    datosSalida.setInteresMora(prestamo * (Math.pow(1 + datosEntrada.getTasaMoratoria() / 100, datosEntrada.getDiasAtraso() / 30) - 1));
                 }
 
-                interes = saldoInicial * TEM; //de momento obviamos el negativo
+                interes = saldoInicial * TEM; // de momento obviamos el negativo
 
-                mesinvisible = mesfila-mesInicio+1;
-
+                mesinvisible = mesfila - mesInicio + 1;
 
                 if (mesinvisible <= datosEntrada.getPeriodoGraciaMeses() && datosEntrada.getTipoPeriodoGracia().equals("T")) {
                     cuota = 0;
                 } else if (mesinvisible <= datosEntrada.getPeriodoGraciaMeses() && datosEntrada.getTipoPeriodoGracia().equals("P")) {
                     cuota = interes;
                 } else if (mesinvisible <= datosEntrada.getNumeroCuotas()) {
-
                     double numeroPeriodos = datosEntrada.getNumeroCuotas() - mesinvisible + 1;
-
-                    if (mesinvisible > 0){
-                        cuota = datosEntrada.calcularCuota(TEM,numeroPeriodos , saldoInicial, 0, false);
-
+                    if (mesinvisible > 0) {
+                        cuota = datosEntrada.calcularCuota(TEM, numeroPeriodos, saldoInicial, 0, false);
                     }
                 }
 
                 amortizacion = cuota - interes;
-
-
                 saldoFinal = saldoInicial - amortizacion;
-
-                if(saldoFinal < 0.0000001) {
+                if (saldoFinal < 0.0000001) {
                     saldoFinal = 0;
                 }
-
                 flujo = cuota;
 
                 datosSalida.setMes(mesinvisible);
                 datosSalida.setSaldoInicial(saldoInicial);
                 datosSalida.setIntereses(interes);
-                if(amortizacion < 0.0000001){
+                if (amortizacion < 0.0000001) {
                     amortizacion = 0;
                 }
                 datosSalida.setAmortizacion(amortizacion);
@@ -104,9 +104,11 @@ public class CalculadoraGrilla {
 
                 saldoInicial = saldoFinal;
 
+                // Establecer la fecha calculada
+                datosSalida.setFecha(calendar.getTime());
             }
 
-            if(mesinvisible >0){
+            if (mesinvisible > 0) {
                 datos.add(datosSalida);
             }
 
@@ -114,8 +116,5 @@ public class CalculadoraGrilla {
         }
 
         return datos;
-
     }
-
-
 }
