@@ -6,34 +6,38 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
 @Setter
 public class AccountRequest {
     @NotNull(message = "Valor de compra es requerido")
-    private BigDecimal ValorCompra;
+    private BigDecimal valorCompra;
 
     @NotEmpty(message = "Tipo de tasa es requerido")
-    private String TipoTasa;
+    private String tipoTasa;
 
     @NotEmpty(message = "Capitalizacion de tasa es requerido")
-    private String CapitalizacionTasa;
+    private String capitalizacionTasa;
 
     @NotNull(message = "Valor de tasa es requerido")
-    private BigDecimal ValorTasa;
+    private BigDecimal valorTasa;
 
     @NotEmpty(message = "Tipo de credito es requerido")
-    private String TipoCredito;
+    private String tipoCredito;
 
     @NotNull(message = "Numero de cuotas es requerido")
-    private Integer NumeroCuotas;
+    private Integer numeroCuotas;
 
     @NotNull(message = "Plazo de gracia es requerido")
-    private Boolean PlazoGracia;
+    private Boolean plazoGracia;
 
     @NotNull(message = "Periodo de gracia es requerido")
-    private Integer PeriodoGracia;
+    private Integer periodoGracia;
+
+    @NotNull(message = "Fecha de pago es requerido")
+    private LocalDate paymentDate; // Añadido
 
     @NotNull(message = "ID del cliente es requerido")
     private UUID clientId;

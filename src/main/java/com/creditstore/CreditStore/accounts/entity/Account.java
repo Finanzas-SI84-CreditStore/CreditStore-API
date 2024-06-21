@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.time.LocalDate;
 
 import java.math.BigDecimal;
 
@@ -51,6 +52,9 @@ public class Account {
 
     @NotNull
     private Integer PeriodoGracia;
+
+    @NotNull
+    private LocalDate paymentDate;
 
 
     @ManyToOne

@@ -105,6 +105,7 @@ public class AccountServiceImpl implements AccountService {
                 .NumeroCuotas(accountRequest.getNumeroCuotas())
                 .PlazoGracia(accountRequest.getPlazoGracia())
                 .PeriodoGracia(accountRequest.getPeriodoGracia())
+                .paymentDate(accountRequest.getPaymentDate()) // Añadido
                 .client(client)
                 .build();
     }
@@ -120,6 +121,7 @@ public class AccountServiceImpl implements AccountService {
         response.setNumeroCuotas(account.getNumeroCuotas());
         response.setPlazoGracia(account.getPlazoGracia());
         response.setPeriodoGracia(account.getPeriodoGracia());
+        response.setPaymentDate(account.getPaymentDate()); // Añadido
         return response;
     }
 
@@ -147,6 +149,9 @@ public class AccountServiceImpl implements AccountService {
         }
         if (accountRequest.getPeriodoGracia() == null) {
             throw new ServiceException(Error.GRACE_PERIOD_LENGTH_REQUIRED);
+        }
+        if (accountRequest.getPaymentDate() == null) {
+            throw new ServiceException(Error.PAYMENT_DATE_REQUIRED); // Añadido
         }
         if (accountRequest.getClientId() == null) {
             throw new ServiceException(Error.CLIENT_NOT_FOUND);

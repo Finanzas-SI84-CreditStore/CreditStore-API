@@ -4,17 +4,19 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 public class AccountResponse {
     private Integer id;
-    private BigDecimal ValorCompra;
-    private String TipoTasa;
-    private String CapitalizacionTasa;
-    private BigDecimal ValorTasa;
-    private String TipoCredito;
-    private Integer NumeroCuotas;
-    private Boolean PlazoGracia;
-    private Integer PeriodoGracia;
+    private BigDecimal valorCompra;
+    private String tipoTasa;
+    private String capitalizacionTasa;
+    private BigDecimal valorTasa;
+    private String tipoCredito;
+    private Integer numeroCuotas;
+    private Boolean plazoGracia;
+    private Integer periodoGracia;
+    private LocalDate paymentDate; // Añadido
 }

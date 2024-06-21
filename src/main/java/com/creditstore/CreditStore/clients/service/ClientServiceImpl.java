@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ClientServiceImpl implements  ClientService{
+public class ClientServiceImpl implements ClientService {
 
   @Autowired
   ClientRepository clientRepository;
@@ -27,22 +27,18 @@ public class ClientServiceImpl implements  ClientService{
   @Override
   public Client create(ClientReq clientReq, UUID userId) {
     Client client = fromReq(clientReq, null);
-    if(clientRepository.existsByDni(client.getDni())){
+    if (clientRepository.existsByDni(client.getDni())) {
       throw new ServiceException(Error.EXIST_CLIENT);
     }
 
     LocalDate now = LocalDate.now();
     LocalDate eighteenYearsAgo = now.minusYears(18);
-    if(client.getBirthDate().isAfter(eighteenYearsAgo)){
+    if (client.getBirthDate().isAfter(eighteenYearsAgo)) {
       throw new ServiceException(Error.INVALID_BIRTH_DATE);
     }
 
-    if(!isDniValid(client.getDni())){
+    if (!isDniValid(client.getDni())) {
       throw new ServiceException(Error.INVALID_DNI);
-    }
-
-    if(!isPaymentDayValid(client.getPaymentDay())){
-      throw new ServiceException(Error.INVALID_PAYMENT_DAY);
     }
 
     User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(Error.USER_NOT_FOUND));
@@ -74,15 +70,15 @@ public class ClientServiceImpl implements  ClientService{
   public List<Client> getAllBiggestDebtorsByUserId(UUID userId) {
     List<Client> clients = clientRepository.findAllByUserId(userId);
     clients.sort((c1, c2) -> Double.compare(c2.getDebt(), c1.getDebt()));
-    if(clients.size() > 6){
+    if (clients.size() > 6) {
       return clients.subList(0, 6);
     }
     return clients;
   }
 
-  private Client fromReq(ClientReq clientReq, UUID id){
+  private Client fromReq(ClientReq clientReq, UUID id) {
     Client client = new Client();
-    if(id!= null){
+    if (id != null) {
       client = getById(id);
     }
 
@@ -91,20 +87,13 @@ public class ClientServiceImpl implements  ClientService{
     client.setDni(clientReq.getDni());
     client.setBirthDate(clientReq.getBirthDate());
     client.setAddress(clientReq.getAddress());
-    client.setPaymentDay(clientReq.getPaymentDay());
     client.setCreditLine(clientReq.getCreditLine());
 
     return client;
   }
 
-  boolean isDniValid(String dni){
+  boolean isDniValid(String dni) {
     String dniPattern = "\\d{8}";
     return dni.matches(dniPattern);
   }
-
-  boolean isPaymentDayValid(int paymentDay){
-    return paymentDay ==5 || paymentDay == 10 || paymentDay == 15 || paymentDay == 20 || paymentDay == 25;
-  }
-
-
 }

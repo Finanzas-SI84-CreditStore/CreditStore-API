@@ -24,9 +24,6 @@ public class ClientReq {
 
   private String address;
 
-  @NotEmpty(message = "El campo fecha de pago")
-  private int paymentDay;
-
   @NotEmpty(message = "El campo línea de crédito es requerido")
   private double creditLine;
 

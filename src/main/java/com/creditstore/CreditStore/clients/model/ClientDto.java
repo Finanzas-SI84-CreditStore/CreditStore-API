@@ -26,7 +26,6 @@ public class ClientDto {
 
   private final String address;
 
-  private final int paymentDay;
 
   private final double creditLine;
 

@@ -25,8 +25,6 @@ public class ClientQuery {
 
   private String address;
 
-  private int paymentDay;
-
   private double creditLine;
 
   private double debt;

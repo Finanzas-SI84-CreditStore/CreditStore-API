@@ -41,7 +41,6 @@ public class Client extends BaseEntity {
 
   private String address;
 
-  private int paymentDay;
 
   private double creditLine;
 
