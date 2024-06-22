@@ -9,18 +9,19 @@ import java.util.Date;
 @Setter
 public class DatosEntrada {
 
-    private String tipoTasa;
+    private String tipoTasa; //tipotasa
     //MENSUAL = 30, TRIMESTRAL = 90, SEMESTRAL = 180, ANUAL = 360, DIARIA = 1, QUINCENAL = 15
     private double tiempoTasa;
     //MENSUAL = 30, TRIMESTRAL = 90, SEMESTRAL = 180, ANUAL = 360, DIARIA = 1, QUINCENAL = 15
-    private double capitalizacion;
-    private double tasa;
-    private String tipoPeriodoGracia;
+    private double capitalizacion; //capitalizacionTasa
+    private double tasa; //valortasa
+    private String tipoPeriodoGracia; //plazogracia
     private double periodoGraciaMeses;
-    private double numeroCuotas;
+    private double numeroCuotas; //numerocuotas
     private double limiteCredito;
+    private String tipoCredito; //tipocredito
     private double cuotasPeriodoGracia;
-    private double montoPrestamo;
+    private double montoPrestamo; //valorcompra
     private double diasAtraso;
     private double tasaMoratoria;
     private Date fechaInicial;  // Nuevo atributo para la fecha inicial
