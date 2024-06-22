@@ -29,8 +29,9 @@ public class CalculadoraGrilla {
         double mesInicio = 1;
         double mesfila = 0;
 
-        // Inicializar la fecha actual
+        // Inicializar la fecha con la fecha proporcionada por el usuario
         Calendar calendar = Calendar.getInstance();
+        calendar.setTime(datosEntrada.getFechaInicial());
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
 
         for (double mesinvisible = 0; mesinvisible <= datosEntrada.getNumeroCuotas(); mesinvisible++) {
@@ -57,7 +58,7 @@ public class CalculadoraGrilla {
             } else {
                 calendar.add(Calendar.MONTH, 1); // Agregar un mes para cada iteración
 
-                if(datosEntrada.getDiasAtraso() == 0) {
+                if (datosEntrada.getDiasAtraso() == 0) {
                     datosSalida.setInteresMora(0);
                 } else {
                     datosSalida.setInteresMora(prestamo * (Math.pow(1 + datosEntrada.getTasaMoratoria() / 100, datosEntrada.getDiasAtraso() / 30) - 1));
