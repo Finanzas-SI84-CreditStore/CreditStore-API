@@ -19,7 +19,7 @@ public class CalculadoraGrilla {
         double prestamo = datosEntrada.getMontoPrestamo();
         double flujo = 0;
         double TEM = 0;
-        if (datosEntrada.getTipoTasa().equals("TEA") && datosEntrada.getTiempoTasa() == 30) {
+        if (datosEntrada.getTipoTasa().equals("EFECTIVA") && datosEntrada.getTiempoTasa() == 30) {
             TEM = datosEntrada.getTasa() / 100.00;
         } else {
             TEM = datosEntrada.calcularTEM(datosEntrada);
@@ -31,12 +31,10 @@ public class CalculadoraGrilla {
         double cuota = 0;
         double saldoFinal = prestamo;
 
-        // Inicializar la fecha con la fecha proporcionada por el usuario
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(datosEntrada.getFechaInicial());
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
 
-        // Añadir el mes 0
         DatosSalida datosSalidaMes0 = new DatosSalida();
         datosSalidaMes0.setMes(0);
         datosSalidaMes0.setSaldoInicial(prestamo);
@@ -100,7 +98,7 @@ public class CalculadoraGrilla {
 
             saldoInicial = saldoFinal;
 
-            // Establecer la fecha calculada
+            datosSalida.setEstado("POR_PAGAR");
             datosSalida.setFecha(calendar.getTime());
 
             datos.add(datosSalida);

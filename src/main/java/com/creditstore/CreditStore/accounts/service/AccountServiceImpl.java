@@ -61,7 +61,7 @@ public class AccountServiceImpl implements AccountService {
         final Account finalAccount = account;
         datosSalidaList.forEach(datosSalida -> {
             datosSalida.setAccount(finalAccount);
-            datosSalida.setEstado("PENDIENTE_POR_PAGAR");
+            datosSalida.setEstado("POR_PAGAR");
         });
 
 

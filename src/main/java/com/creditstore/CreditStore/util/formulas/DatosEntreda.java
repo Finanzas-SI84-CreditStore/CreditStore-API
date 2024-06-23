@@ -34,7 +34,7 @@ public class DatosEntreda {
     public double calcularTEA(DatosEntreda datosEntreda) {
         double TEA;
 
-        if (!datosEntreda.getTipoTasa().equals("TEA")) {
+        if (!datosEntreda.getTipoTasa().equals("EFECTIVA")) {
             TEA = Math.pow((1 + (datosEntreda.getTasa() / 100) / (360.00 / datosEntreda.getCapitalizacion())), (360.00 / datosEntreda.getCapitalizacion())) - 1;
         } else TEA = datosEntreda.getTasa() / 100.00;
 

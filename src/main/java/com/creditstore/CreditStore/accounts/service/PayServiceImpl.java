@@ -5,14 +5,20 @@ import com.creditstore.CreditStore.accounts.entity.Pay;
 import com.creditstore.CreditStore.accounts.model.PayRequest;
 import com.creditstore.CreditStore.accounts.model.PayResponse;
 import com.creditstore.CreditStore.accounts.repository.AccountRepository;
+import com.creditstore.CreditStore.accounts.repository.DatosSalidaRepository;
 import com.creditstore.CreditStore.accounts.repository.PayRepository;
 import com.creditstore.CreditStore.clients.entity.Client;
+import com.creditstore.CreditStore.clients.repository.ClientRepository;
+import com.creditstore.CreditStore.shared.formulas.DatosSalida;
 import com.creditstore.CreditStore.util.exception.ServiceException;
 import com.creditstore.CreditStore.util.util.Error;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PayServiceImpl implements PayService {
@@ -20,25 +26,63 @@ public class PayServiceImpl implements PayService {
     private PayRepository payRepository;
 
     @Autowired
-    private AccountService accountService;
+    private AccountRepository accountRepository;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private DatosSalidaRepository datosSalidaRepository;
+
+    @Autowired
+    private ClientRepository clientRepository;
+
+
 
     @Override
     public PayResponse create(PayRequest payRequest, Integer accountId) {
+
+        // Variable para la fecha del día de hoy
+        LocalDate today = LocalDate.now();
+
         Pay pay = fromRequest(payRequest, accountId);
         pay = payRepository.save(pay);
+
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ServiceException(Error.ACCOUNT_NOT_FOUND));
+        List<DatosSalida> datosSalida = datosSalidaRepository.findAllByAccount_Id(account.getId());
 
         Client client = account.getClient();
-        double newDebt = client.getDebt() - pay.getAmount();
-        if (newDebt < 0) {
-            newDebt = 0;
+
+
+        for (DatosSalida dato : datosSalida) {
+            //logica condiciomal
+            if (pay.getAmount() <= 0) {
+                break;
+            }
+            if (dato.getEstado().equals("POR_PAGAR") ) {
+                dato.setEstado("PAGADO");
+                break;
+            }
         }
-        client.setDebt(newDebt);
-        accountRepository.save(account);
+
+        datosSalidaRepository.saveAll(datosSalida);
+        // Calcular la deuda total del cliente sumando los saldos finales de todas las cuentas del cliente
+        Double deudaTotalCredito = 0.0;
+        List<Account> accounts = accountRepository.findAllByClientId(client.getId());
+        for (Account acc : accounts) {
+            List<DatosSalida> datosSalidaCuenta = datosSalidaRepository.findAllByAccount_Id(acc.getId());
+            for (DatosSalida dato : datosSalidaCuenta) {
+                LocalDate fechaDato = LocalDate.parse(dato.getFecha(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                if (dato.getEstado().equals("POR_PAGAR") && fechaDato.getMonthValue() == today.getMonthValue() && fechaDato.getYear() == today.getYear()) {
+                    deudaTotalCredito += dato.getSaldoFinal();
+                }
+            }
+        }
+
+        // Actualizar la deuda y la línea de crédito disponible del cliente
+        client.setDebt(deudaTotalCredito);
+        client.setAvailableBalance(client.getCreditLine() - deudaTotalCredito);
+
+        clientRepository.save(client);
+
         return toResponse(pay);
     }
 
