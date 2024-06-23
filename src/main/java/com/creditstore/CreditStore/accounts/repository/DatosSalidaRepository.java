@@ -9,5 +9,7 @@ import java.util.UUID;
 
 @Repository
 public interface DatosSalidaRepository extends JpaRepository<DatosSalida, Integer> {
+
+    List<DatosSalida> findAllByAccount_Id(Integer accountId);
 }
 

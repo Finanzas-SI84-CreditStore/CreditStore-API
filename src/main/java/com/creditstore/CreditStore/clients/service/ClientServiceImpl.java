@@ -42,6 +42,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(Error.USER_NOT_FOUND));
+    client.setAvailableBalance(client.getCreditLine()-client.getDebt());
     client.setUser(user);
     client.setStatus(1);
     client.setDateHourCreation(new Date());
