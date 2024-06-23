@@ -10,20 +10,24 @@ import java.util.Date;
 @Setter
 public class DatosEntrada {
 
-    private String tipoTasa;//tipoTasa
+
+    private String tipoTasa; //tipotasa
     //MENSUAL = 30, TRIMESTRAL = 90, SEMESTRAL = 180, ANUAL = 360, DIARIA = 1, QUINCENAL = 15
     private double tiempoTasa;//tiempoTasa
     //MENSUAL = 30, TRIMESTRAL = 90, SEMESTRAL = 180, ANUAL = 360, DIARIA = 1, QUINCENAL = 15
-    private double capitalizacion;//capitalizacionTasa
-    private double tasa;//valorTasa
-    private String tipoPeriodoGracia;//plazoGracia
-    private double periodoGraciaMeses;//periodoGracia
-    private double numeroCuotas;//numeroCuotas
-    private double limiteCredito;//limiteCredito
-    private double montoPrestamo; //ValorCompra
-    private double diasAtraso;//diasAtraso
-    private double tasaMoratoria;//tasaMoratoria
-    private Date fechaInicial;  //paymentDate
+
+    private double capitalizacion; //capitalizacionTasa
+    private double tasa; //valortasa
+    private String tipoPeriodoGracia; //plazogracia
+    private double periodoGraciaMeses;
+    private double numeroCuotas; //numerocuotas
+    private double limiteCredito;
+    private String tipoCredito; //tipocredito
+    private double cuotasPeriodoGracia;
+    private double montoPrestamo; //valorcompra
+    private double diasAtraso;
+    private double tasaMoratoria;
+    private Date fechaInicial;  // Nuevo atributo para la fecha inicial
 
     // ENTRA NOMINAL SALE EFECTIVA
     public double calcularTEM(DatosEntrada datosEntrada) {
