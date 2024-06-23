@@ -1,5 +1,6 @@
 package com.creditstore.CreditStore.accounts.rest;
 
+import com.creditstore.CreditStore.accounts.entity.Account;
 import com.creditstore.CreditStore.accounts.model.AccountRequest;
 import com.creditstore.CreditStore.accounts.model.AccountResponse;
 import com.creditstore.CreditStore.accounts.model.PayRequest;
@@ -31,8 +32,8 @@ public class AccountRest {
     }
 
     @GetMapping("/clients/{clientId}/accounts")
-    public ResponseEntity<List<AccountResponse>> getAllByClientId(@PathVariable UUID clientId) {
-        List<AccountResponse> accounts = accountService.getAll(clientId);
+    public ResponseEntity<List<Account>> getAllByClientId(@PathVariable UUID clientId) {
+        List<Account> accounts = accountService.getAll(clientId);
         return ResponseEntity.ok(accounts);
     }
 

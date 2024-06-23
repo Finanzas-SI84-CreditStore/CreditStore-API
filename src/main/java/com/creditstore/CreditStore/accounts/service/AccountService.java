@@ -1,5 +1,6 @@
 package com.creditstore.CreditStore.accounts.service;
 
+import com.creditstore.CreditStore.accounts.entity.Account;
 import com.creditstore.CreditStore.accounts.model.AccountRequest;
 import com.creditstore.CreditStore.accounts.model.AccountResponse;
 
@@ -9,7 +10,7 @@ import java.util.UUID;
 public interface AccountService {
     AccountResponse create(AccountRequest accountRequest);
     AccountResponse getById(Integer id);
-    List<AccountResponse> getAll(UUID clientId);
+    List<Account> getAll(UUID clientId);
     AccountResponse update(Integer id, AccountRequest accountRequest);
     void delete(Integer id);
 }

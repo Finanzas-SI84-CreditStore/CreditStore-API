@@ -3,27 +3,27 @@ package com.creditstore.CreditStore.shared.formulas;
 import lombok.*;
 import java.util.Date;
 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class DatosEntrada {
 
-    private String tipoTasa;
+    private String tipoTasa;//tipoTasa
     //MENSUAL = 30, TRIMESTRAL = 90, SEMESTRAL = 180, ANUAL = 360, DIARIA = 1, QUINCENAL = 15
-    private double tiempoTasa;
+    private double tiempoTasa;//tiempoTasa
     //MENSUAL = 30, TRIMESTRAL = 90, SEMESTRAL = 180, ANUAL = 360, DIARIA = 1, QUINCENAL = 15
-    private double capitalizacion;
-    private double tasa;
-    private String tipoPeriodoGracia;
-    private double periodoGraciaMeses;
-    private double numeroCuotas;
-    private double limiteCredito;
-    private double cuotasPeriodoGracia;
-    private double montoPrestamo;
-    private double diasAtraso;
-    private double tasaMoratoria;
-    private Date fechaInicial;  // Nuevo atributo para la fecha inicial
+    private double capitalizacion;//capitalizacionTasa
+    private double tasa;//valorTasa
+    private String tipoPeriodoGracia;//plazoGracia
+    private double periodoGraciaMeses;//periodoGracia
+    private double numeroCuotas;//numeroCuotas
+    private double limiteCredito;//limiteCredito
+    private double montoPrestamo; //ValorCompra
+    private double diasAtraso;//diasAtraso
+    private double tasaMoratoria;//tasaMoratoria
+    private Date fechaInicial;  //paymentDate
 
     // ENTRA NOMINAL SALE EFECTIVA
     public double calcularTEM(DatosEntrada datosEntrada) {

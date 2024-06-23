@@ -2,14 +2,21 @@ package com.creditstore.CreditStore.shared.formulas;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.creditstore.CreditStore.accounts.entity.Account;
+import com.creditstore.CreditStore.clients.entity.Client;
+import jakarta.persistence.*;
 import lombok.*;
 
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
 public class DatosSalida {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private double mes;
     private double saldoInicial;
     private double intereses;
@@ -21,6 +28,9 @@ public class DatosSalida {
     private String tipoPeriodoGracia;
     private double interesMora;
     private String fecha;  // Nuevo atributo para la fecha
+    @ManyToOne
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
 
     // Método para establecer la fecha en formato dd/MM/yy
     public void setFecha(Date date) {

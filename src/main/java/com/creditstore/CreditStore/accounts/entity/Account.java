@@ -1,21 +1,15 @@
 package com.creditstore.CreditStore.accounts.entity;
 
 import com.creditstore.CreditStore.clients.entity.Client;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.LocalDate;
 
-import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -30,32 +24,40 @@ public class Account {
     private Integer id;
 
     @NotNull
-    private BigDecimal ValorCompra;
+    private Double valorCompra;
 
     @NotNull
-    private String TipoTasa;
+    private String tipoTasa;
 
     @NotNull
-    private String CapitalizacionTasa;
+    private Double capitalizacionTasa;
 
     @NotNull
-    private BigDecimal ValorTasa;
+    private Double valorTasa;
 
     @NotNull
-    private String TipoCredito;
+    private String tipoCredito;
 
     @NotNull
-    private Integer NumeroCuotas;
+    private Double numeroCuotas;
 
     @NotNull
-    private Boolean PlazoGracia;
+    private String plazoGracia;
 
     @NotNull
-    private Integer PeriodoGracia;
+    private Double periodoGracia;
 
     @NotNull
-    private LocalDate paymentDate;
+    @Temporal(TemporalType.DATE)
+    private Date paymentDate;
 
+    private Double tasaMoratoria;
+
+    private Double diasAtraso;
+
+    private Double limiteCredito;
+
+    private Double tiempoTasa;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
