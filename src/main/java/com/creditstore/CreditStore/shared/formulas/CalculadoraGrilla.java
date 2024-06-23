@@ -10,10 +10,6 @@ public class CalculadoraGrilla {
 
     public static List<DatosSalida> calculadora(DatosEntrada datosEntrada) {
 
-        if ("VENCIMIENTO".equalsIgnoreCase(datosEntrada.getTipoCredito())) {
-            datosEntrada.setNumeroCuotas(1);
-        }
-
         List<DatosSalida> datos = new ArrayList<>();
 
         double prestamo = datosEntrada.getMontoPrestamo();

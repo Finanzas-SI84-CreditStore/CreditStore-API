@@ -28,6 +28,7 @@ public class DatosSalida {
     private String tipoPeriodoGracia;
     private double interesMora;
     private String fecha;  // Nuevo atributo para la fecha
+    private String estado;
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
