@@ -25,100 +25,85 @@ public class CalculadoraGrilla {
             TEM = datosEntrada.calcularTEM(datosEntrada);
         }
 
-        double saldoInicial = 0;
+        double saldoInicial = prestamo;
         double interes;
         double amortizacion = 0;
         double cuota = 0;
-        double saldoFinal = 0;
-
-        double mesInicio = 1;
-        double mesfila = 0;
+        double saldoFinal = prestamo;
 
         // Inicializar la fecha con la fecha proporcionada por el usuario
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(datosEntrada.getFechaInicial());
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
 
-        for (double mesinvisible = 0; mesinvisible <= datosEntrada.getNumeroCuotas(); mesinvisible++) {
-            if (mesfila < mesInicio) {
-                saldoInicial = 0;
-            } else if (mesfila == mesInicio) {
-                saldoInicial = prestamo;
-            } else if (mesfila <= datosEntrada.getPeriodoGraciaMeses() + mesInicio - 1) {
-                saldoInicial = saldoFinal + (mesfila == mesInicio ? prestamo : 0);
-            } else {
-                saldoInicial = saldoFinal;
-            }
+        // Añadir el mes 0
+        DatosSalida datosSalidaMes0 = new DatosSalida();
+        datosSalidaMes0.setMes(0);
+        datosSalidaMes0.setSaldoInicial(prestamo);
+        datosSalidaMes0.setIntereses(0);
+        datosSalidaMes0.setAmortizacion(0);
+        datosSalidaMes0.setCuota(0);
+        datosSalidaMes0.setSaldoFinal(prestamo);
+        datosSalidaMes0.setFlujo(prestamo);
+        datosSalidaMes0.setFecha(calendar.getTime());
+        datos.add(datosSalidaMes0);
+
+        for (double mesfila = 1; mesfila <= datosEntrada.getNumeroCuotas(); mesfila++) {
             DatosSalida datosSalida = new DatosSalida();
 
-            // Establecer la fecha para cada mes
-            if (mesfila == 0) {
-                datosSalida.setSaldoInicial(prestamo);
-                datosSalida.setIntereses(0);
-                datosSalida.setAmortizacion(0);
-                datosSalida.setCuota(0);
-                datosSalida.setSaldoFinal(prestamo);
-                datosSalida.setFlujo(prestamo);
-                datosSalida.setFecha(calendar.getTime());
+            calendar.add(Calendar.MONTH, 1); // Agregar un mes para cada iteración
+
+            if (datosEntrada.getDiasAtraso() == 0) {
+                datosSalida.setInteresMora(0);
             } else {
-                calendar.add(Calendar.MONTH, 1); // Agregar un mes para cada iteración
-
-                if (datosEntrada.getDiasAtraso() == 0) {
-                    datosSalida.setInteresMora(0);
-                } else {
-                    datosSalida.setInteresMora(prestamo * (Math.pow(1 + datosEntrada.getTasaMoratoria() / 100, datosEntrada.getDiasAtraso() / 30) - 1));
-                }
-
-                interes = saldoInicial * TEM; // de momento obviamos el negativo
-
-                mesinvisible = mesfila - mesInicio + 1;
-
-                if (mesinvisible <= datosEntrada.getPeriodoGraciaMeses() && datosEntrada.getTipoPeriodoGracia().equals("T")) {
-                    cuota = 0;
-                } else if (mesinvisible <= datosEntrada.getPeriodoGraciaMeses() && datosEntrada.getTipoPeriodoGracia().equals("P")) {
-                    cuota = interes;
-                } else if (mesinvisible <= datosEntrada.getNumeroCuotas()) {
-                    double numeroPeriodos = datosEntrada.getNumeroCuotas() - mesinvisible + 1;
-                    if (mesinvisible > 0) {
-                        cuota = datosEntrada.calcularCuota(TEM, numeroPeriodos, saldoInicial, 0, false);
-                    }
-                }
-
-                amortizacion = cuota - interes;
-                saldoFinal = saldoInicial - amortizacion;
-                if (saldoFinal < 0.0000001) {
-                    saldoFinal = 0;
-                }
-                flujo = cuota;
-
-                datosSalida.setMes(mesinvisible);
-                datosSalida.setSaldoInicial(saldoInicial);
-                datosSalida.setIntereses(interes);
-                if (amortizacion < 0.0000001) {
-                    amortizacion = 0;
-                }
-                datosSalida.setAmortizacion(amortizacion);
-                datosSalida.setCuota(cuota);
-                datosSalida.setSaldoFinal(saldoFinal);
-                datosSalida.setFlujo(flujo);
-                datosSalida.setTem(TEM);
-                if (mesinvisible <= datosEntrada.getPeriodoGraciaMeses()) {
-                    datosSalida.setTipoPeriodoGracia(datosEntrada.getTipoPeriodoGracia());
-                } else {
-                    datosSalida.setTipoPeriodoGracia("S");
-                }
-
-                saldoInicial = saldoFinal;
-
-                // Establecer la fecha calculada
-                datosSalida.setFecha(calendar.getTime());
+                datosSalida.setInteresMora(prestamo * (Math.pow(1 + datosEntrada.getTasaMoratoria() / 100, datosEntrada.getDiasAtraso() / 30) - 1));
             }
 
-            if (mesinvisible > 0) {
-                datos.add(datosSalida);
+            interes = saldoInicial * TEM; // de momento obviamos el negativo
+
+            double mesinvisible = mesfila;
+
+            if (mesinvisible <= datosEntrada.getPeriodoGraciaMeses() && datosEntrada.getTipoPeriodoGracia().equals("T")) {
+                cuota = 0;
+            } else if (mesinvisible <= datosEntrada.getPeriodoGraciaMeses() && datosEntrada.getTipoPeriodoGracia().equals("P")) {
+                cuota = interes;
+            } else if (mesinvisible <= datosEntrada.getNumeroCuotas()) {
+                double numeroPeriodos = datosEntrada.getNumeroCuotas() - mesinvisible + 1;
+                if (mesinvisible > 0) {
+                    cuota = datosEntrada.calcularCuota(TEM, numeroPeriodos, saldoInicial, 0, false);
+                }
             }
 
-            mesfila++;
+            amortizacion = cuota - interes;
+            saldoFinal = saldoInicial - amortizacion;
+            if (saldoFinal < 0.0000001) {
+                saldoFinal = 0;
+            }
+            flujo = cuota;
+
+            datosSalida.setMes(mesinvisible);
+            datosSalida.setSaldoInicial(saldoInicial);
+            datosSalida.setIntereses(interes);
+            if (amortizacion < 0.0000001) {
+                amortizacion = 0;
+            }
+            datosSalida.setAmortizacion(amortizacion);
+            datosSalida.setCuota(cuota);
+            datosSalida.setSaldoFinal(saldoFinal);
+            datosSalida.setFlujo(flujo);
+            datosSalida.setTem(TEM);
+            if (mesinvisible <= datosEntrada.getPeriodoGraciaMeses()) {
+                datosSalida.setTipoPeriodoGracia(datosEntrada.getTipoPeriodoGracia());
+            } else {
+                datosSalida.setTipoPeriodoGracia("S");
+            }
+
+            saldoInicial = saldoFinal;
+
+            // Establecer la fecha calculada
+            datosSalida.setFecha(calendar.getTime());
+
+            datos.add(datosSalida);
         }
 
         return datos;
