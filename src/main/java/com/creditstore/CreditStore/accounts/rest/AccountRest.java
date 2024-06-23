@@ -7,6 +7,7 @@ import com.creditstore.CreditStore.accounts.model.PayRequest;
 import com.creditstore.CreditStore.accounts.model.PayResponse;
 import com.creditstore.CreditStore.accounts.service.AccountService;
 import com.creditstore.CreditStore.accounts.service.PayService;
+import com.creditstore.CreditStore.clients.model.ClientDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,6 @@ public class AccountRest {
         return ResponseEntity.ok(accounts);
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<AccountResponse> update(@PathVariable Integer id, @RequestBody AccountRequest accountRequest) {
         AccountResponse updatedAccount = accountService.update(id, accountRequest);
@@ -50,7 +50,6 @@ public class AccountRest {
         return ResponseEntity.noContent().build();
     }
 
-    // agregar pagos
     @PostMapping("/{id}/pays")
     public ResponseEntity<PayResponse> createPay(@PathVariable Integer id, @RequestBody PayRequest payRequest) {
         PayResponse newPay = payService.create(payRequest, id);
@@ -63,4 +62,10 @@ public class AccountRest {
         return ResponseEntity.ok(pays);
     }
 
+    // Nuevo endpoint para obtener la deuda del cliente
+    @GetMapping("/{id}/client-debt")
+    public ResponseEntity<ClientDto> getClientDebt(@PathVariable Integer id) {
+        ClientDto clientDebt = accountService.getClientDebt(id);
+        return ResponseEntity.ok(clientDebt);
+    }
 }

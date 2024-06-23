@@ -7,12 +7,15 @@ import com.creditstore.CreditStore.accounts.repository.AccountRepository;
 import com.creditstore.CreditStore.accounts.repository.DatosSalidaRepository;
 import com.creditstore.CreditStore.clients.repository.ClientRepository;
 import com.creditstore.CreditStore.clients.entity.Client;
+import com.creditstore.CreditStore.clients.model.ClientDto;
 import com.creditstore.CreditStore.shared.formulas.CalculadoraGrilla;
 import com.creditstore.CreditStore.shared.formulas.DatosEntrada;
 import com.creditstore.CreditStore.shared.formulas.DatosSalida;
 import com.creditstore.CreditStore.util.exception.ServiceException;
+
 import com.creditstore.CreditStore.util.util.Error;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -135,6 +138,19 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void delete(Integer id) {
         accountRepository.deleteById(id);
+    }
+
+    @Override
+    public ClientDto getClientDebt(Integer accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ServiceException(Error.ACCOUNT_NOT_FOUND));
+        Client client = account.getClient();
+        if (client == null) {
+            throw new ServiceException(Error.CLIENT_NOT_FOUND);
+        }
+        return new ClientDto(client.getId(), client.getName(), client.getLastName(), client.getDni(),
+                client.getBirthDate(), client.getAddress(), client.getCreditLine(),
+                client.getDebt(), client.getAvailableBalance());
     }
 
     private Account fromRequest(AccountRequest accountRequest, Client client) {
