@@ -63,10 +63,4 @@ public class AccountRest {
         return ResponseEntity.ok(pays);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AccountResponse> getById(@PathVariable Integer id) {
-        AccountResponse account = accountService.getById(id);
-        return ResponseEntity.ok(account);
-    }
-
 }

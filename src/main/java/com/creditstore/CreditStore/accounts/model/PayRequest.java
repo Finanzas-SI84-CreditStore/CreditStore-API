@@ -14,6 +14,4 @@ public class PayRequest {
 
     @NotEmpty(message = "El campo fecha de pago es requerido")
     private LocalDate date;
-
-
 }

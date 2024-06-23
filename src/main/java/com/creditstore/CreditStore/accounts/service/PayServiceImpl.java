@@ -12,8 +12,8 @@ import com.creditstore.CreditStore.util.util.Error;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
+
 @Service
 public class PayServiceImpl implements PayService {
     @Autowired
@@ -29,10 +29,15 @@ public class PayServiceImpl implements PayService {
     public PayResponse create(PayRequest payRequest, Integer accountId) {
         Pay pay = fromRequest(payRequest, accountId);
         pay = payRepository.save(pay);
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new ServiceException(Error.ACCOUNT_NOT_FOUND));
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ServiceException(Error.ACCOUNT_NOT_FOUND));
 
         Client client = account.getClient();
-        client.setDebt(client.getDebt() - pay.getAmount());
+        double newDebt = client.getDebt() - pay.getAmount();
+        if (newDebt < 0) {
+            newDebt = 0;
+        }
+        client.setDebt(newDebt);
         accountRepository.save(account);
         return toResponse(pay);
     }
