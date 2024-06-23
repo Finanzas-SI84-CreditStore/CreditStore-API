@@ -14,5 +14,5 @@ public interface AccountService {
     List<Account> getAll(UUID clientId);
     AccountResponse update(Integer id, AccountRequest accountRequest);
     void delete(Integer id);
-    ClientDto getClientDebt(Integer accountId);
+    Double getAccountDebt(Integer accountId);
 }

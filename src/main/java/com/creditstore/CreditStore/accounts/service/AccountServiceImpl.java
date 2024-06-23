@@ -71,7 +71,6 @@ public class AccountServiceImpl implements AccountService {
         client.setAvailableBalance(client.getAvailableBalance() - accountRequest.getValorCompra());
         client.setDebt(client.getDebt() + accountRequest.getValorCompra());
         clientRepository.save(client);
-
         return accountResponse;
     }
 
@@ -144,16 +143,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ClientDto getClientDebt(Integer accountId) {
+    public Double getAccountDebt(Integer accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ServiceException(Error.ACCOUNT_NOT_FOUND));
-        Client client = account.getClient();
-        if (client == null) {
-            throw new ServiceException(Error.CLIENT_NOT_FOUND);
-        }
-        return new ClientDto(client.getId(), client.getName(), client.getLastName(), client.getDni(),
-                client.getBirthDate(), client.getAddress(), client.getCreditLine(),
-                client.getDebt(), client.getAvailableBalance());
+        return 0.0;
     }
 
     private Account fromRequest(AccountRequest accountRequest, Client client) {
