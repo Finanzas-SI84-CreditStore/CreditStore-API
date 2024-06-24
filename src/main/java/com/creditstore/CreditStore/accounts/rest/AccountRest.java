@@ -38,6 +38,7 @@ public class AccountRest {
         return ResponseEntity.ok(accounts);
     }
 
+
     @PutMapping("/{id}")
     public ResponseEntity<AccountResponse> update(@PathVariable Integer id, @RequestBody AccountRequest accountRequest) {
         AccountResponse updatedAccount = accountService.update(id, accountRequest);
@@ -50,6 +51,7 @@ public class AccountRest {
         return ResponseEntity.noContent().build();
     }
 
+    // agregar pagos
     @PostMapping("/{id}/pays")
     public ResponseEntity<PayResponse> createPay(@PathVariable Integer id, @RequestBody PayRequest payRequest) {
         PayResponse newPay = payService.create(payRequest, id);
@@ -63,9 +65,14 @@ public class AccountRest {
     }
 
     // Nuevo endpoint para obtener la deuda del cliente
-    @GetMapping("/{id}/client-debt")
-    public ResponseEntity<ClientDto> getClientDebt(@PathVariable Integer id) {
-        ClientDto clientDebt = accountService.getClientDebt(id);
-        return ResponseEntity.ok(clientDebt);
+    @GetMapping("/{id}/credit-debt")
+    public ResponseEntity<Double> get(@PathVariable Integer id) {
+        return ResponseEntity.ok(accountService.getAccountDebt(id));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AccountResponse> getById(@PathVariable Integer id) {
+        AccountResponse account = accountService.getById(id);
+        return ResponseEntity.ok(account);
     }
 }

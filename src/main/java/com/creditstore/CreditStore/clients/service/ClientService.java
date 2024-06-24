@@ -18,4 +18,5 @@ public interface ClientService {
 
   List<Client> getAllBiggestDebtorsByUserId(UUID userId);
 
+
 }

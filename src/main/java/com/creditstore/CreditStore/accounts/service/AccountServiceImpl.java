@@ -43,46 +43,48 @@ public class AccountServiceImpl implements AccountService {
         Client client = clientRepository.findById(accountRequest.getClientId())
                 .orElseThrow(() -> new ServiceException(Error.CLIENT_NOT_FOUND));
 
-        /*
-        //límite de credito
-        BigDecimal availableBalance = BigDecimal.valueOf(client.getAvailableBalance());
-        BigDecimal ValorCompra = accountRequest.getValorCompra();
 
-        if (availableBalance.compareTo(ValorCompra) < 0) {
+        BigDecimal availableBalance = BigDecimal.valueOf(client.getAvailableBalance());
+        BigDecimal valorCompra = BigDecimal.valueOf(accountRequest.getValorCompra());
+
+        if (availableBalance.compareTo(valorCompra) < 0) {
             throw new ServiceException(Error.CREDIT_LINE_EXCEEDED);
-        }*/
+        }
 
         Account account = fromRequest(accountRequest, client);
         account = accountRepository.save(account);
-        final Account finalAccount = account;
+
 
         DatosEntrada datosEntrada = fromRequestToDatosEntrada(accountRequest);
         List<DatosSalida> datosSalidaList = CalculadoraGrilla.calculadora(datosEntrada);
-        // Asignamos la cuenta guardada a cada instancia de DatosSalida
-        datosSalidaList.forEach(datosSalida -> datosSalida.setAccount(finalAccount));
+        // Asignamos la cuenta guardada a cada instancia de
+        final Account finalAccount = account;
+        datosSalidaList.forEach(datosSalida -> {
+            datosSalida.setAccount(finalAccount);
+            datosSalida.setEstado("POR_PAGAR");
+        });
+
+
         AccountResponse accountResponse = toResponse(datosEntrada, datosSalidaList);
         datosSalidaRepository.saveAll(datosSalidaList);
 
-
-
-        //TODO: SE DEBE CALCULAR EL VALOR RESTANTE
-        //TODO: SE DEBE HACER PRUEBAS
-        client.setAvailableBalance(client.getAvailableBalance() - accountRequest.getValorCompra().doubleValue());
-        client.setDebt(client.getDebt() + accountRequest.getValorCompra().doubleValue());
+        client.setAvailableBalance(client.getAvailableBalance() - accountRequest.getValorCompra());
+        client.setDebt(client.getDebt() + accountRequest.getValorCompra());
         clientRepository.save(client);
-
-
-
-
-
-
         return accountResponse;
     }
 
     @Override
     public AccountResponse getById(Integer id) {
-        return null;
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new ServiceException(Error.ACCOUNT_NOT_FOUND));
+        List<DatosSalida> datosSalidaList = datosSalidaRepository.findAllByAccount_Id(id);
+        return toResponse(fromAccountToDatosEntrada(account), datosSalidaList);
     }
+
+
+
+
 
     /*
     @Override
@@ -141,16 +143,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ClientDto getClientDebt(Integer accountId) {
+    public Double getAccountDebt(Integer accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ServiceException(Error.ACCOUNT_NOT_FOUND));
-        Client client = account.getClient();
-        if (client == null) {
-            throw new ServiceException(Error.CLIENT_NOT_FOUND);
-        }
-        return new ClientDto(client.getId(), client.getName(), client.getLastName(), client.getDni(),
-                client.getBirthDate(), client.getAddress(), client.getCreditLine(),
-                client.getDebt(), client.getAvailableBalance());
+        return 0.0;
     }
 
     private Account fromRequest(AccountRequest accountRequest, Client client) {
@@ -166,13 +162,16 @@ public class AccountServiceImpl implements AccountService {
                 .paymentDate(accountRequest.getPaymentDate())
                 .tasaMoratoria(accountRequest.getTasaMoratoria())
                 .diasAtraso(accountRequest.getDiasAtraso())
-                .limiteCredito(accountRequest.getLimiteCredito())
+                .limiteCredito(client.getCreditLine())
                 .tiempoTasa(accountRequest.getTiempoTasa())
                 .client(client)
                 .build();
     }
 
     private DatosEntrada fromRequestToDatosEntrada(AccountRequest accountRequest) {
+        Client client = clientRepository.findById(accountRequest.getClientId())
+                .orElseThrow(() -> new ServiceException(Error.CLIENT_NOT_FOUND));
+
         return DatosEntrada.builder()
                 .montoPrestamo(accountRequest.getValorCompra())  // valorCompra -> montoPrestamo
                 .tasa(accountRequest.getValorTasa())  // valorTasa -> tasa
@@ -184,7 +183,7 @@ public class AccountServiceImpl implements AccountService {
                 .fechaInicial(accountRequest.getPaymentDate())  // paymentDate -> fechaInicial
                 .tasaMoratoria(accountRequest.getTasaMoratoria())  // tasaMoratoria -> tasaMoratoria
                 .diasAtraso(accountRequest.getDiasAtraso())  // diasAtraso -> diasAtraso
-                .limiteCredito(accountRequest.getLimiteCredito())  // limiteCredito -> limiteCredito
+                .limiteCredito(client.getCreditLine())  // limiteCredito -> limiteCredito
                 .tiempoTasa(accountRequest.getTiempoTasa())  // tiempoTasa -> tiempoTasa
                 .build();
     }
@@ -249,10 +248,6 @@ public class AccountServiceImpl implements AccountService {
             throw new ServiceException(Error.GENERIC_ERROR);
         }
 
-        if (accountRequest.getLimiteCredito() != null && accountRequest.getLimiteCredito() < 0) {
-            throw new ServiceException(Error.GENERIC_ERROR);
-        }
-
         if (accountRequest.getTiempoTasa() != null && accountRequest.getTiempoTasa() <= 0) {
             throw new ServiceException(Error.GENERIC_ERROR);
         }
@@ -261,4 +256,24 @@ public class AccountServiceImpl implements AccountService {
             throw new ServiceException(Error.CLIENT_NOT_FOUND);
         }
     }
+
+
+    private DatosEntrada fromAccountToDatosEntrada(Account account) {
+        return DatosEntrada.builder()
+                .montoPrestamo(account.getValorCompra())  // valorCompra -> montoPrestamo
+                .tasa(account.getValorTasa())  // valorTasa -> tasa
+                .numeroCuotas(account.getNumeroCuotas())  // numeroCuotas -> numeroCuotas
+                .tipoTasa(account.getTipoTasa())  // tipoTasa -> tipoTasa
+                .capitalizacion(account.getCapitalizacionTasa())  // capitalizacionTasa -> capitalizacion
+                .tipoPeriodoGracia(account.getPlazoGracia())  // plazoGracia -> tipoPeriodoGracia
+                .periodoGraciaMeses(account.getPeriodoGracia())  // periodoGracia -> periodoGraciaMeses
+                .fechaInicial(account.getPaymentDate())  // paymentDate -> fechaInicial
+                .tasaMoratoria(account.getTasaMoratoria())  // tasaMoratoria -> tasaMoratoria
+                .diasAtraso(account.getDiasAtraso())  // diasAtraso -> diasAtraso
+                .limiteCredito(account.getClient().getCreditLine())  // limiteCredito -> limiteCredito
+                .tiempoTasa(account.getTiempoTasa())  // tiempoTasa -> tiempoTasa
+                .build();
+    }
+
+
 }

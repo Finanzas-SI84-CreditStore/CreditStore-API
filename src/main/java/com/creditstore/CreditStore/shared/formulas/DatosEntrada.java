@@ -23,7 +23,6 @@ public class DatosEntrada {
     private double numeroCuotas; //numerocuotas
     private double limiteCredito;
     private String tipoCredito; //tipocredito
-    private double cuotasPeriodoGracia;
     private double montoPrestamo; //valorcompra
     private double diasAtraso;
     private double tasaMoratoria;

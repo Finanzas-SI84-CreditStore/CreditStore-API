@@ -44,7 +44,7 @@ public class AccountRequest {
 
     private Double diasAtraso;//diasAtraso
 
-    private Double limiteCredito;//limiteCredito
+    //private Double limiteCredito;// -> lo estoy comentando porque viene del cliente y no se necesita en la entrada
 
     private Double tiempoTasa;//tiempoTasa
 
