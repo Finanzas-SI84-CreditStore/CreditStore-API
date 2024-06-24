@@ -12,6 +12,7 @@ import com.creditstore.CreditStore.clients.repository.ClientRepository;
 import com.creditstore.CreditStore.shared.formulas.DatosSalida;
 import com.creditstore.CreditStore.util.exception.ServiceException;
 import com.creditstore.CreditStore.util.util.Error;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class PayServiceImpl implements PayService {
     @Autowired
@@ -33,8 +35,6 @@ public class PayServiceImpl implements PayService {
 
     @Autowired
     private ClientRepository clientRepository;
-
-
 
     @Override
     public PayResponse create(PayRequest payRequest, Integer accountId) {
@@ -51,29 +51,43 @@ public class PayServiceImpl implements PayService {
 
         Client client = account.getClient();
 
-
         for (DatosSalida dato : datosSalida) {
-            //logica condiciomal
             if (pay.getAmount() <= 0) {
                 break;
             }
-            if (dato.getEstado().equals("POR_PAGAR") ) {
+            if (dato.getEstado().equals("POR_PAGAR") && dato.getMes() != 0) {
                 dato.setEstado("PAGADO");
                 break;
             }
         }
 
         datosSalidaRepository.saveAll(datosSalida);
+
         // Calcular la deuda total del cliente sumando los saldos finales de todas las cuentas del cliente
         Double deudaTotalCredito = 0.0;
         List<Account> accounts = accountRepository.findAllByClientId(client.getId());
+
         for (Account acc : accounts) {
+            Double totalMesCero = 0.0;
+            Double saldoFinalPagado = null;  // Usamos null para saber si no hay pagos
+
             List<DatosSalida> datosSalidaCuenta = datosSalidaRepository.findAllByAccount_Id(acc.getId());
+
             for (DatosSalida dato : datosSalidaCuenta) {
-                LocalDate fechaDato = LocalDate.parse(dato.getFecha(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                if (dato.getEstado().equals("POR_PAGAR") && fechaDato.getMonthValue() == today.getMonthValue() && fechaDato.getYear() == today.getYear()) {
-                    deudaTotalCredito += dato.getSaldoFinal();
+                if (dato.getMes() == 0) {
+                    totalMesCero = dato.getSaldoFinal();
                 }
+
+                if (dato.getEstado().equals("PAGADO") && dato.getMes() != 0) {
+                    saldoFinalPagado = dato.getSaldoFinal();
+                }
+            }
+
+            // Si hay pagos realizados (saldoFinalPagado no es null), usamos ese saldo
+            if (saldoFinalPagado != null) {
+                deudaTotalCredito += saldoFinalPagado;
+            } else {
+                deudaTotalCredito += totalMesCero;  // Si no, usamos el saldo del mes 0
             }
         }
 
