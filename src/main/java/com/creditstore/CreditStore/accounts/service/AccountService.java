@@ -15,4 +15,5 @@ public interface AccountService {
     AccountResponse update(Integer id, AccountRequest accountRequest);
     void delete(Integer id);
     Double getAccountDebt(Integer accountId);
+    double calculateTotalInteresMoratorio(Integer accountId);
 }

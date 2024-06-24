@@ -148,6 +148,13 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new ServiceException(Error.ACCOUNT_NOT_FOUND));
         return 0.0;
     }
+    @Override
+    public double calculateTotalInteresMoratorio(Integer accountId) {
+        List<DatosSalida> datosSalidaList = datosSalidaRepository.findAllByAccount_Id(accountId);
+        return datosSalidaList.stream()
+                .mapToDouble(DatosSalida::getInteresMora)
+                .sum();
+    }
 
     private Account fromRequest(AccountRequest accountRequest, Client client) {
         return Account.builder()
@@ -194,6 +201,7 @@ public class AccountServiceImpl implements AccountService {
                 .datosSalidaList(datosSalida)
                 .build();
     }
+
 
     private void validateAccountRequest(AccountRequest accountRequest) {
         if (accountRequest.getValorCompra() == null) {

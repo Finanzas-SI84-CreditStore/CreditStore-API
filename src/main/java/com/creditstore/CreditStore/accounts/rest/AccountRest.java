@@ -75,4 +75,9 @@ public class AccountRest {
         AccountResponse account = accountService.getById(id);
         return ResponseEntity.ok(account);
     }
+    @GetMapping("/{id}/total-interes-moratorio")
+    public ResponseEntity<Double> getTotalInteresMoratorio(@PathVariable Integer id) {
+        double totalInteresMoratorio = accountService.calculateTotalInteresMoratorio(id);
+        return ResponseEntity.ok(totalInteresMoratorio);
+    }
 }
