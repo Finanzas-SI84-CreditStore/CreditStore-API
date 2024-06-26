@@ -12,13 +12,14 @@ import com.creditstore.CreditStore.shared.formulas.CalculadoraGrilla;
 import com.creditstore.CreditStore.shared.formulas.DatosEntrada;
 import com.creditstore.CreditStore.shared.formulas.DatosSalida;
 import com.creditstore.CreditStore.util.exception.ServiceException;
-
 import com.creditstore.CreditStore.util.util.Error;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -154,6 +155,29 @@ public class AccountServiceImpl implements AccountService {
         return datosSalidaList.stream()
                 .mapToDouble(DatosSalida::getInteresMora)
                 .sum();
+    }
+    @Override
+    public List<DatosSalida> calcularInteresMoratorio(Integer accountId, LocalDate fechaPagoReal) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ServiceException(Error.ACCOUNT_NOT_FOUND));
+
+        List<DatosSalida> datosSalida = datosSalidaRepository.findAllByAccount_Id(accountId);
+
+        for (DatosSalida dato : datosSalida) {
+            LocalDate fechaVencimiento = LocalDate.parse(dato.getFecha(), DateTimeFormatter.ofPattern("dd/MM/yy"));
+            long diasAtraso = ChronoUnit.DAYS.between(fechaVencimiento, fechaPagoReal);
+
+            if (diasAtraso > 0) {
+                double saldoInicial = dato.getSaldoInicial();
+                double tasaMoratoria = account.getTasaMoratoria() / 100; // Asumiendo que está en porcentaje
+                double interesMora = saldoInicial * (Math.pow(1 + tasaMoratoria, diasAtraso / 30.0) - 1);
+                dato.setInteresMora(interesMora);
+            } else {
+                dato.setInteresMora(0);
+            }
+        }
+
+        return datosSalidaRepository.saveAll(datosSalida);
     }
 
     private Account fromRequest(AccountRequest accountRequest, Client client) {

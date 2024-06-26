@@ -8,10 +8,13 @@ import com.creditstore.CreditStore.accounts.model.PayResponse;
 import com.creditstore.CreditStore.accounts.service.AccountService;
 import com.creditstore.CreditStore.accounts.service.PayService;
 import com.creditstore.CreditStore.clients.model.ClientDto;
+import com.creditstore.CreditStore.shared.formulas.DatosSalida;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -75,6 +78,15 @@ public class AccountRest {
         AccountResponse account = accountService.getById(id);
         return ResponseEntity.ok(account);
     }
+
+    @GetMapping("/{id}/interes-moratorio")
+    public ResponseEntity<List<DatosSalida>> calcularInteresMoratorio(
+            @PathVariable Integer id,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPagoReal) {
+        List<DatosSalida> resultado = accountService.calcularInteresMoratorio(id, fechaPagoReal);
+        return ResponseEntity.ok(resultado);
+    }
+
     @GetMapping("/{id}/total-interes-moratorio")
     public ResponseEntity<Double> getTotalInteresMoratorio(@PathVariable Integer id) {
         double totalInteresMoratorio = accountService.calculateTotalInteresMoratorio(id);
