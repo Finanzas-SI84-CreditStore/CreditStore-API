@@ -51,6 +51,8 @@ public class PayServiceImpl implements PayService {
 
         Client client = account.getClient();
 
+
+
         for (DatosSalida dato : datosSalida) {
             if (pay.getAmount() <= 0) {
                 break;
@@ -89,6 +91,11 @@ public class PayServiceImpl implements PayService {
             } else {
                 deudaTotalCredito += totalMesCero;  // Si no, usamos el saldo del mes 0
             }
+        }
+
+        if(client.isTieneMora()){
+            client.setTieneMora(false);
+            account.setDiasAtraso(0.0);
         }
 
         // Actualizar la deuda y la línea de crédito disponible del cliente
