@@ -3,8 +3,8 @@ package com.creditstore.CreditStore.shared.formulas;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 public class CalculadoraGrilla {
 
@@ -33,9 +33,11 @@ public class CalculadoraGrilla {
         double cuota = 0;
         double saldoFinal = prestamo;
 
-        Calendar calendar = Calendar.getInstance();
+
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         calendar.setTime(datosEntrada.getFechaInicial());
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         DatosSalida datosSalidaMes0 = new DatosSalida();
         datosSalidaMes0.setMes(0);

@@ -6,6 +6,7 @@ import com.creditstore.CreditStore.accounts.entity.Account;
 import com.creditstore.CreditStore.clients.entity.Client;
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.TimeZone;
 
 @Entity
 @NoArgsConstructor
@@ -36,6 +37,7 @@ public class DatosSalida {
     // Método para establecer la fecha en formato dd/MM/yy
     public void setFecha(Date date) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         this.fecha = formatter.format(date);
     }
 }

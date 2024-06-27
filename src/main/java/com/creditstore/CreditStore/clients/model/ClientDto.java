@@ -32,18 +32,21 @@ public class ClientDto {
 
   private double availableBalance;
 
-  public ClientDto(UUID id, String name, String lastName, String dni, LocalDate birthDate,
-                   String address, double creditLine, double debt, double availableBalance) {
-    this.id = id;
-    this.name = name;
-    this.lastName = lastName;
-    this.dni = dni;
-    this.birthDate = birthDate;
-    this.address = address;
-    this.creditLine = creditLine;
-    this.debt = debt;
-    this.availableBalance = availableBalance;
-  }
+  private boolean tieneMora;
 
+  //public ClientDto(UUID id, String name, String lastName, String dni, LocalDate birthDate,
+  //                 String address, double creditLine, double debt, double availableBalance,
+  //                 boolean tieneMora) {
+  //  this.id = id;
+  //  this.name = name;
+  //  this.lastName = lastName;
+  //  this.dni = dni;
+  //  this.birthDate = birthDate;
+  //  this.address = address;
+  //  this.creditLine = creditLine;
+  //  this.debt = debt;
+  //  this.availableBalance = availableBalance;
+  //  this.tieneMora = tieneMora;
+  //}
 
 }

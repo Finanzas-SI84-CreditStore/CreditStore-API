@@ -48,6 +48,8 @@ public class Client extends BaseEntity {
 
   private double availableBalance;
 
+  private boolean tieneMora;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   @ToString.Exclude

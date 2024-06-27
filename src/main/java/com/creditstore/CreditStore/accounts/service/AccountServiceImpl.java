@@ -7,7 +7,6 @@ import com.creditstore.CreditStore.accounts.repository.AccountRepository;
 import com.creditstore.CreditStore.accounts.repository.DatosSalidaRepository;
 import com.creditstore.CreditStore.clients.repository.ClientRepository;
 import com.creditstore.CreditStore.clients.entity.Client;
-import com.creditstore.CreditStore.clients.model.ClientDto;
 import com.creditstore.CreditStore.shared.formulas.CalculadoraGrilla;
 import com.creditstore.CreditStore.shared.formulas.DatosEntrada;
 import com.creditstore.CreditStore.shared.formulas.DatosSalida;
@@ -15,15 +14,13 @@ import com.creditstore.CreditStore.util.exception.ServiceException;
 import com.creditstore.CreditStore.util.util.Error;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -55,14 +52,34 @@ public class AccountServiceImpl implements AccountService {
         Account account = fromRequest(accountRequest, client);
         account = accountRepository.save(account);
 
+        LocalDate fechaHoy = LocalDate.now();
 
         DatosEntrada datosEntrada = fromRequestToDatosEntrada(accountRequest);
+
         List<DatosSalida> datosSalidaList = CalculadoraGrilla.calculadora(datosEntrada);
         // Asignamos la cuenta guardada a cada instancia de
         final Account finalAccount = account;
+        Account finalAccount1 = account;
         datosSalidaList.forEach(datosSalida -> {
             datosSalida.setAccount(finalAccount);
-            datosSalida.setEstado("POR_PAGAR");
+            if (datosSalida.getCuota() > 0) {
+                datosSalida.setEstado("POR_PAGAR");
+            } else {
+                datosSalida.setEstado("PAGADO");
+            }
+            if(datosSalida.getEstado() == "POR_PAGAR"){
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+                LocalDate fechaPago = LocalDate.parse(datosSalida.getFecha(), formatter);
+                long diasDiferencia = ChronoUnit.DAYS.between(fechaPago, fechaHoy);
+                if(diasDiferencia > 0){
+                    double interesMora = calcularInteresMoratorioPorCuota(datosSalida.getSaldoInicial(), finalAccount1.getTasaMoratoria(), diasDiferencia);
+                    datosSalida.setInteresMora(interesMora);
+                    finalAccount1.setDiasAtraso((double) diasDiferencia);
+                    accountRepository.save(finalAccount1);
+                    client.setTieneMora(true);
+                    clientRepository.save(client);
+                }
+            }
         });
 
 
@@ -82,19 +99,6 @@ public class AccountServiceImpl implements AccountService {
         List<DatosSalida> datosSalidaList = datosSalidaRepository.findAllByAccount_Id(id);
         return toResponse(fromAccountToDatosEntrada(account), datosSalidaList);
     }
-
-
-
-
-
-    /*
-    @Override
-    public AccountResponse getById(Integer id) {
-        Optional<Account> account = accountRepository.findById(id);
-        return account.map(this::toResponse).orElse(null);
-    }
-
-     */
 
     @Override
     public List<Account> getAll(UUID clientId) {
@@ -145,9 +149,15 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Double getAccountDebt(Integer accountId) {
-        Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new ServiceException(Error.ACCOUNT_NOT_FOUND));
-        return 0.0;
+        List<DatosSalida> datosSalidaList = datosSalidaRepository.findAllByAccount_Id(accountId);
+        Double deudaTotalMes = 0.0;
+        for (DatosSalida datosSalida : datosSalidaList) {
+            if(datosSalida.getEstado().equals("POR_PAGAR") && datosSalida.getCuota() != 0.0 ) {
+                deudaTotalMes = datosSalida.getCuota() + datosSalida.getInteresMora();
+                break;
+            }
+        }
+        return deudaTotalMes;
     }
     @Override
     public double calculateTotalInteresMoratorio(Integer accountId) {
@@ -179,6 +189,12 @@ public class AccountServiceImpl implements AccountService {
 
         return datosSalidaRepository.saveAll(datosSalida);
     }
+
+    public double calcularInteresMoratorioPorCuota(double compra, double tasaMoratoria, long diasAtraso) {
+        double tem = tasaMoratoria / 100;
+        return compra * (Math.pow(1 + tem, diasAtraso / 30.0) - 1);
+    }
+
 
     private Account fromRequest(AccountRequest accountRequest, Client client) {
         return Account.builder()
@@ -292,18 +308,19 @@ public class AccountServiceImpl implements AccountService {
 
     private DatosEntrada fromAccountToDatosEntrada(Account account) {
         return DatosEntrada.builder()
-                .montoPrestamo(account.getValorCompra())  // valorCompra -> montoPrestamo
-                .tasa(account.getValorTasa())  // valorTasa -> tasa
-                .numeroCuotas(account.getNumeroCuotas())  // numeroCuotas -> numeroCuotas
-                .tipoTasa(account.getTipoTasa())  // tipoTasa -> tipoTasa
-                .capitalizacion(account.getCapitalizacionTasa())  // capitalizacionTasa -> capitalizacion
-                .tipoPeriodoGracia(account.getPlazoGracia())  // plazoGracia -> tipoPeriodoGracia
-                .periodoGraciaMeses(account.getPeriodoGracia())  // periodoGracia -> periodoGraciaMeses
-                .fechaInicial(account.getPaymentDate())  // paymentDate -> fechaInicial
-                .tasaMoratoria(account.getTasaMoratoria())  // tasaMoratoria -> tasaMoratoria
-                .diasAtraso(account.getDiasAtraso())  // diasAtraso -> diasAtraso
-                .limiteCredito(account.getClient().getCreditLine())  // limiteCredito -> limiteCredito
-                .tiempoTasa(account.getTiempoTasa())  // tiempoTasa -> tiempoTasa
+                .montoPrestamo(account.getValorCompra())
+                .tasa(account.getValorTasa())
+                .numeroCuotas(account.getNumeroCuotas())
+                .tipoTasa(account.getTipoTasa())
+                .capitalizacion(account.getCapitalizacionTasa())
+                .tipoPeriodoGracia(account.getPlazoGracia())
+                .periodoGraciaMeses(account.getPeriodoGracia())
+                .fechaInicial(account.getPaymentDate())
+                .tasaMoratoria(account.getTasaMoratoria())
+                .diasAtraso(account.getDiasAtraso())
+                .limiteCredito(account.getClient().getCreditLine())
+                .tiempoTasa(account.getTiempoTasa())
+                .tipoCredito(account.getTipoCredito())
                 .build();
     }
 

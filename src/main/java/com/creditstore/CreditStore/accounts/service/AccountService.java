@@ -19,4 +19,6 @@ public interface AccountService {
     Double getAccountDebt(Integer accountId);
     double calculateTotalInteresMoratorio(Integer accountId);
     List<DatosSalida> calcularInteresMoratorio(Integer accountId, LocalDate fechaPagoReal);
+
+
 }
