@@ -21,8 +21,10 @@ public class CalculadoraGrilla {
         double TEM = 0;
         if (datosEntrada.getTipoTasa().equals("EFECTIVA") && datosEntrada.getTiempoTasa() == 30) {
             TEM = datosEntrada.getTasa() / 100.00;
+        } else if(datosEntrada.getTipoTasa().equals("EFECTIVA")) {
+            TEM = datosEntrada.calcularTEaTEM(datosEntrada);
         } else {
-            TEM = datosEntrada.calcularTEM(datosEntrada);
+            TEM = datosEntrada.calcularTNaTEM(datosEntrada);
         }
 
         double saldoInicial = prestamo;
