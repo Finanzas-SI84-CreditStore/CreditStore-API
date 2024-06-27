@@ -29,9 +29,16 @@ public class DatosEntrada {
     private Date fechaInicial;  // Nuevo atributo para la fecha inicial
 
     // ENTRA NOMINAL SALE EFECTIVA
-    public double calcularTEM(DatosEntrada datosEntrada) {
+    public double calcularTNaTEM(DatosEntrada datosEntrada) {
         double TEM;
         TEM = Math.pow((1 + ((datosEntrada.tasa / 100) / (datosEntrada.tiempoTasa / datosEntrada.capitalizacion))), (30 / datosEntrada.capitalizacion)) - 1;
+        return TEM;
+    }
+
+    // ENTRA EFECTIVA SALE EFECTIVA
+    public double calcularTEaTEM(DatosEntrada datosEntrada) {
+        double TEM;
+        TEM = Math.pow((1 + (datosEntrada.tasa / 100)), (30 / datosEntrada.tiempoTasa)) - 1;
         return TEM;
     }
 
